@@ -1,13 +1,10 @@
-import { type Metadata } from 'next'
 import Link from 'next/link'
 
 import { AuthLayout } from '@/components/auth/AuthLayout'
 import { Button } from '@/components/auth/Button'
 import { SelectField, TextField } from '@/components/auth/Fields'
-
-export const metadata: Metadata = {
-  title: 'Sign Up',
-}
+import "react-datepicker/dist/react-datepicker.css";
+import { signupFetch } from '@/app/(auth)/signup/actions'
 
 export default function Register() {
   return (
@@ -23,22 +20,8 @@ export default function Register() {
         </>
       }
     >
-      <form>
+      <form action={signupFetch}>
         <div className="grid grid-cols-2 gap-6">
-          <TextField
-            label="First name"
-            name="first_name"
-            type="text"
-            autoComplete="given-name"
-            required
-          />
-          <TextField
-            label="Last name"
-            name="last_name"
-            type="text"
-            autoComplete="family-name"
-            required
-          />
           <TextField
             className="col-span-full"
             label="Email address"
@@ -55,10 +38,22 @@ export default function Register() {
             autoComplete="new-password"
             required
           />
-          <SelectField className="col-span-full" label="성별" name="gender">
-            <option>남성</option>
-            <option>여성</option>
+          <TextField
+            label="Nickname"
+            name="nickname"
+            type="text"
+            required
+          />
+          <SelectField label="성별" name="gender">
+            <option value="ture">남성</option>
+            <option value="false">여성</option>
           </SelectField>
+          <TextField
+            label="생년월일"
+            name="birth-date"
+            type="date"
+            required
+          />
         </div>
         <Button type="submit" color="cyan" className="mt-8 w-full">
           회원가입
