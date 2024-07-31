@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   });
 
   // Set cookies in the headers (adjust values as needed)
-  headers.set('set-cookie', 'accessToken=eyJhbGciOiJIUzI1NiJ9...; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/, refreshToken=eyJhbGciOiJIUzI1NiJ9...; Max-Age=2592000000; Expires=Mon, 13 Sep 2106 07:35:47 GMT; Path=/, username=qwerty@qwerty.com; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/, nickname=; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/');
+  headers.set('set-cookie', 'accessToken=eyJhbGciOiJIUzI1NiJ9...; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/, refreshToken=eyJhbGciOiJIUzI1NiJ9...; Max-Age=2592000000; Expires=Mon, 13 Sep 2106 07:35:47 GMT; Path=/, username=qwerty@qwerty.com; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/, nickname=kimpuro; Max-Age=60000; Expires=Thu, 25 Jul 2024 00:15:47 GMT; Path=/');
 
   return new NextResponse(null, { // Empty body
     status: 200,
