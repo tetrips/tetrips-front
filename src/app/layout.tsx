@@ -2,6 +2,7 @@ import { type Metadata } from 'next'
 import { GeistSans } from "geist/font/sans";
 import '@/styles/globals.css'
 import { cookies } from 'next/headers'
+import Header from '@/components/common/Header'
 
 export const metadata: Metadata = {
   title: {
@@ -19,7 +20,10 @@ export default function RootLayout({
   const cookieStore = cookies()
   return (
     <html lang="ko" className={GeistSans.className}>
-      <body>{children}</body>
+      <body>
+      <Header />
+      {children}
+      </body>
     </html>
   )
 }
