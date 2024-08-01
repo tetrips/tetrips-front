@@ -58,7 +58,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function ProjectList() {
   return (
     <ul role="list" className="divide-y divide-gray-100">
       {projects.map((project) => (

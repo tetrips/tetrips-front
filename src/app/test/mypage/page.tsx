@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Dialog, DialogPanel, Field, Label, Switch } from '@headlessui/react'
-import { Bars3Icon } from '@heroicons/react/20/solid'
 import {
   BellIcon,
   CreditCardIcon,
@@ -12,13 +11,6 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-
-const navigation = [
-  { name: 'Home', href: '#' },
-  { name: 'Invoices', href: '#' },
-  { name: 'Clients', href: '#' },
-  { name: 'Expenses', href: '#' },
-]
 const secondaryNavigation = [
   { name: 'General', href: '#', icon: UserCircleIcon, current: true },
   { name: 'Security', href: '#', icon: FingerPrintIcon, current: false },
