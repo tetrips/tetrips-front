@@ -1,16 +1,41 @@
-import { type Metadata } from 'next'
-import Link from 'next/link'
+'use client';
 
-import { AuthLayout } from '@/components/auth/AuthLayout'
-import { Button } from '@/components/auth/Button'
-import { TextField } from '@/components/auth/Fields'
-import { login } from '@/app/(auth)/login/actions'
-
-export const metadata: Metadata = {
-  title: 'Sign In',
-}
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { AuthLayout } from '@/components/auth/AuthLayout';
+import { Button } from '@/components/auth/Button';
+import { TextField } from '@/components/auth/Fields';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const res = await fetch(`http://localhost:3000/test/login`, {
+        // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.ok) {
+        console.log(res);
+        // router.push('/');
+        window.location.href = '/';
+      } else {
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   return (
     <AuthLayout
       title="Sign in to account"
@@ -24,7 +49,7 @@ export default function Login() {
         </>
       }
     >
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="space-y-6">
           <TextField
             label="Email address"
@@ -32,6 +57,8 @@ export default function Login() {
             type="email"
             autoComplete="email"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             label="Password"
@@ -39,17 +66,18 @@ export default function Login() {
             type="password"
             autoComplete="current-password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <Button
           type="submit"
           color="cyan"
           className="mt-8 w-full"
-          formAction={login}
         >
           로그인
         </Button>
       </form>
     </AuthLayout>
-  )
+  );
 }

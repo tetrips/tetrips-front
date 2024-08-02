@@ -67,7 +67,7 @@ export default function Promo() {
           </h1>
           <div className="mt-4 sm:mt-6">
             <a
-              href="/list"
+              href="/project"
               className="inline-block rounded-md border border-transparent bg-white px-8 py-3 font-medium text-black hover:bg-amber-50"
             >
               프로젝트 생성

@@ -34,6 +34,6 @@ export async function login(formData: FormData) {
     }
   } catch (error) {
     console.log(error)
-      redirect('error');
+      redirect('error');// redirect 는 try-catch 밖으로 이동해야 함
   }
 }
