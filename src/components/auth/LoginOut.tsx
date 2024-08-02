@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import { cookies } from 'next/headers'
 // @ts-ignore
 import { getCookie } from '@/libs/cookieUtils'
 import { deleteUserCookie } from '@/app/(auth)/logout/actions'
@@ -24,8 +23,8 @@ export default function LoginOut() {
   }
 
   useEffect(() => {
-    async function fetchUsername() {
-      const usernameCookie = await getCookie('username'); // getCookie 함수가 비동기 방식이라고 가정
+    function fetchUsername() {
+      const usernameCookie = getCookie('username'); // getCookie 함수가 비동기 방식이라고 가정
       setUsername(usernameCookie || null); // 쿠키가 없으면 null 설정
       setIsLoading(false);
     }

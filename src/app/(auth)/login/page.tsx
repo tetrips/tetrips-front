@@ -26,7 +26,8 @@ export default function Login() {
 
       if (res.ok) {
         console.log(res);
-        router.push('/');
+        // router.push('/');
+        window.location.href = '/';
       } else {
         console.error('Login failed');
       }
