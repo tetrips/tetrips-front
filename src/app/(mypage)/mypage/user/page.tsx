@@ -12,9 +12,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 const secondaryNavigation = [
-  { name: '개인 정보', href: '#', icon: UserCircleIcon, current: true },
-  { name: '비밀번호 변경', href: '#', icon: FingerPrintIcon, current: false },
-  { name: '회원 탈퇴', href: '#', icon: UsersIcon, current: false },
+  { name: '개인 정보', href: '/mypage/user', icon: UserCircleIcon, current: true },
+  { name: '비밀번호 변경', href: '/mypage/password', icon: FingerPrintIcon, current: false },
+  { name: '회원 탈퇴', href: '/mypage/withdraw', icon: UsersIcon, current: false },
 ]
 
 function classNames(...classes) {
