@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import '@/styles/globals.css'
 import { cookies } from 'next/headers'
 import Header from '@/components/common/Header'
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: {
@@ -22,6 +23,10 @@ export default function RootLayout({
     <html lang="ko" className={GeistSans.className}>
       <body>
       <Header />
+      <Script
+          src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NAVER_MAPS_API_KEY}&submodules=geocoder`}
+          strategy="beforeInteractive"
+          />
       {children}
       </body>
     </html>
