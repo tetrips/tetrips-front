@@ -1,5 +1,7 @@
 'use server'
 
+import { redirect } from 'next/navigation'
+
 export async function signupFetch(formData: FormData) {
   const data = {
     email: formData.get('email') as string,
@@ -20,4 +22,5 @@ export async function signupFetch(formData: FormData) {
     } catch (error) {
       console.log(error)
     }
+    redirect('/login')
   }
