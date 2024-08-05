@@ -42,7 +42,7 @@ export default function Login() {
       subtitle={
         <>
           회원이 아니신가요?{' '}
-          <Link href="/register" className="text-cyan-600">
+          <Link href="/signup" className="text-cyan-600">
             여기
           </Link>{' '}
           를 눌러 가입하세요.
