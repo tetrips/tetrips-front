@@ -17,7 +17,7 @@ export default function Login() {
     event.preventDefault();
     try {
       // const res = await fetch(`http://localhost:3000/test/login`, {
-      const res = await fetch(`/api/cookie/return`, {
+      const res = await fetch(`/api/cookie/return/first`, {
       //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
         method: 'POST',
         headers: {
