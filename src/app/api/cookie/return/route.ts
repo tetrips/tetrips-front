@@ -11,10 +11,12 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify({ email, password }),
   });
 
-  // 백엔드로부터 받은 응답을 그대로 리턴
-  return new NextResponse(res.body, {
+  const toReturn = new NextResponse(res.body, {
     status: res.status,
     statusText: res.statusText,
     headers: res.headers,
   });
+  console.log(toReturn)
+  // 백엔드로부터 받은 응답을 그대로 리턴
+  return toReturn
 }
