@@ -5,7 +5,7 @@ export async function signupFetch(formData: FormData) {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
     nickname: formData.get('nickname') as string,
-    gender: formData.get('gender') as string,
+    gender: (formData.get('gender') as string) === 'true',
     birthDate: formData.get('birth-date') as string,
   }
   try {
