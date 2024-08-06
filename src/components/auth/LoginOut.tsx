@@ -7,6 +7,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 // @ts-ignore
 import { getCookie } from '@/libs/cookieUtils'
 import { deleteUserCookie } from '@/app/(auth)/logout/actions'
+import postLogout from '@/services/postLogout'
 
 
 function classNames(...classes: string[]) {
@@ -19,6 +20,7 @@ export default function LoginOut() {
 
   const handleLogout = async () => {
     await deleteUserCookie()
+    await postLogout()
     window.location.reload();
   }
 
