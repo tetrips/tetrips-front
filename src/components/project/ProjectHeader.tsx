@@ -1,27 +1,22 @@
 'use client'
-import { useProjectStore } from "@/stores/projectStore";
+
+import { useYjs } from "@/hooks/useYjs";
 import { ClientProject } from "@/types/Project";
-import { useEffect } from "react";
 
 export default function ProjectHeader({project}:{project:ClientProject}) {
-  const {currentProject, updateProject,setCurrentProject} = useProjectStore();
+  const {updateProject,isSaving } = useYjs({project});
 
-  useEffect(() => {
-    setCurrentProject(project);
-  }, [project, setCurrentProject]);
-  
   const handleInvite = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/project/${project.id}`);
-
+    navigator.clipboard.writeText(`${window.location.origin}/projects/${project.id}`);
+    alert('프로젝트 초대 링크가 복사되었습니다.');
   }
+  
   const handleComplete = async () => {
-    try {
-      await updateProject(currentProject);
-
-      alert('프로젝트가 성공적으로 저장되었습니다.');
-    } catch (err) {
-      console.error('Update error:', err);
-      alert('프로젝트 업데이트 중 오류가 발생했습니다.');
+    try{
+      await updateProject();
+      alert('프로젝트가 저장되었습니다.');
+    }catch(e){
+      alert('프로젝트 저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -34,9 +29,9 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
           {project.guests.map((user, index) => (
             <div
               key={index}
-              className={`flex items-center justify-center w-10 h-10 bg-color6 text-white rounded-full m-1`}
+              className={`flex items-center justify-center w-10 h-10 rounded-full m-1 bg-sky-500 text-white`}
             >
-              {user.nickname.charAt(0)}
+              {user.nickname?.[0]}
             </div>
           ))}
           <button
@@ -49,7 +44,7 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
             onClick={handleComplete}
             className="bg-color2 text-white text-sm px-5 py-2 rounded"
           >
-            저장
+            {isSaving ? '저장 중...' : '저장'}
           </button>
           <div>
 

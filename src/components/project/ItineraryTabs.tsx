@@ -1,4 +1,5 @@
 'use client'
+
 import { Itinerary } from "@/types/Project";
 
 interface ItineraryTabsProps {
@@ -12,7 +13,7 @@ export default function ItineraryTabs({ itineraries, activeDay, setActiveDay }: 
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
       {itineraries.map((itinerary, index) => (
         <button
-          key={itinerary.id}
+          key={itinerary.itineraryId}
           className={`p-4 text-left ${
             activeDay === index
               ? 'bg-color2 text-white'
@@ -27,5 +28,4 @@ export default function ItineraryTabs({ itineraries, activeDay, setActiveDay }: 
     </div>
   );
 }
-
 
