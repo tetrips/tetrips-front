@@ -54,6 +54,9 @@ export default function Signup() {
       else if(result ==='fail'){
         alert('이미 사용중인 닉네임입니다.');
       }
+      else if(result ==='not-supported'){
+        alert('지원하지 않는 언어입니다.');
+      }
       else {
         redirect('/error/back');
       }

@@ -27,6 +27,9 @@ export async function existsNicknameCheck(nickname : string){
   else if(response.status === 200){
     return 'success';
   }
+  else if(response.status === 400){
+    return 'not-supported';
+  }
   else {
     return 'error';
   }
