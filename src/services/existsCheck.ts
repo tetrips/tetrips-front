@@ -21,7 +21,7 @@ export async function existsNicknameCheck(nickname : string){
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${encodedNickname}`, {
   });
   console.log(response);
-  if(response.status === 209){
+  if(response.status === 409){
     return 'fail';
   }
   else if(response.status === 200){
