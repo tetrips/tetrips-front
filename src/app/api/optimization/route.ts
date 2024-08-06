@@ -25,6 +25,8 @@ interface TmapOptimizationResponse {
       viaPointName: string;
       viaX: number;
       viaY: number;
+      arriveTime: string;
+      completeTime : string;
     };
   }>;
 }
@@ -72,7 +74,6 @@ export async function POST(request: Request) {
 
     const searchData: TmapOptimizationResponse = await searchResponse.json();
 
-    // 중복 제거 및 최적화된 경로 순서대로 장소 리스트 재구성
     const destinationMap = new Map<string, Destination>(
       [startPlace, ...destinations, endPlace].map((dest) => [dest.id, dest])
     );
@@ -88,7 +89,11 @@ export async function POST(request: Request) {
           seenIds.add(id);
           const destination = destinationMap.get(id);
           if (destination) {
-            optimizedRoute.push(destination);
+            optimizedRoute.push({
+              ...destination,
+              startTime: feature.properties.arriveTime,
+              endTime: feature.properties.completeTime 
+            });
           }
         }
       });

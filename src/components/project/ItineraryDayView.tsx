@@ -1,6 +1,4 @@
 'use client'
-
-import { Itinerary, Destination } from '@/types/Project';
 import { 
   DndContext, 
   closestCenter,
@@ -16,13 +14,17 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { useProjectStore } from '@/stores/projectStore';
+
+import { useState } from 'react';
+import { Destination, Itinerary } from '@/types/Project';
+import { OptimizedRouteButton } from './OptimizedRouteButton';
+import OptimizedRoute from './OptimizedRoute';
 
 interface ItineraryDayViewProps {
   itinerary: Itinerary;
   onOpenModal: (purpose: 'start' | 'end' | 'add') => void;
-  onItineraryChange: (updatedItinerary: Itinerary) => void;
-  removeDestination: (date:string, destinationId: string) => void;
+  onItineraryChange: (newDayStartTime: string) => void;
+  removeDestination: (destinationId: string) => void;
   reorderDestinations: (newOrder: string[]) => void;
   updateDestinationDuration: (destinationId: string, duration: number) => void;
 }
@@ -33,7 +35,7 @@ export default function ItineraryDayView({
   onItineraryChange,
   removeDestination,
   reorderDestinations,
-  updateDestinationDuration
+  updateDestinationDuration,
 }: ItineraryDayViewProps) {
 
   const sensors = useSensors(
@@ -42,9 +44,13 @@ export default function ItineraryDayView({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const [optimizedRoute, setOptimizedRoute] = useState<Destination[]>([]);
+  const [isOptimizedRouteOpen, setIsOptimizedRouteOpen] = useState(false);
+
   const handleDayStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = e.target.value;
-    onItineraryChange({ ...itinerary, dayStartTime: newTime });
+    onItineraryChange(newTime);
   };
 
   const handleDragEnd = (event: any) => {
@@ -58,6 +64,7 @@ export default function ItineraryDayView({
         const newDestinations = arrayMove(itinerary.destinations, oldIndex, newIndex);
         const newOrder = newDestinations.map((item) => item.id);
         reorderDestinations(newOrder);
+
       }
     }
   };
@@ -90,10 +97,10 @@ export default function ItineraryDayView({
       const optimizedData: { optimizedRoute: Destination[] } = await response.json();
   
       const optimizedDestinations = optimizedData.optimizedRoute;
+      setOptimizedRoute(optimizedDestinations);
 
       const newOrder = optimizedDestinations.map((item) => item.id);
-      useProjectStore.getState().reorderDestinations(itinerary.date, newOrder);
-  
+      reorderDestinations(newOrder);
       alert('동선이 최적화되었습니다.');
     } catch (error) {
       console.error('Route optimization error:', error);
@@ -126,14 +133,22 @@ export default function ItineraryDayView({
           className="border rounded p-1"
         />
       </div>
+
       <div className="flex-grow flex flex-col space-y-4 overflow-x-hidden">
         <div>
           <LocationBox type="start" place={itinerary.startPlace} />
         </div>
+
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-sm">여행지 리스트</h3>
             <div>
+              {/* {optimizedRoute.length > 0 &&
+                  <OptimizedRouteButton
+                  onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
+                  isOpen={isOptimizedRouteOpen}
+                />
+                } */}
               <button
                 onClick={() => onOpenModal('add')}
                 className="bg-color2 text-white px-4 py-1 rounded mr-2"
@@ -163,9 +178,8 @@ export default function ItineraryDayView({
                     key={destination.id} 
                     id={destination.id}
                     destination={destination}
-                    date={itinerary.date}
                     updateDestinationDuration={updateDestinationDuration}
-                    removeDestination={() => removeDestination(itinerary.date, destination.id)}
+                    removeDestination={() => removeDestination(destination.id)}
                   />
                 ))}
               </div>
@@ -175,6 +189,7 @@ export default function ItineraryDayView({
         <div>
           <LocationBox type="end" place={itinerary.endPlace} />
         </div>
+        {/* <OptimizedRoute isOpen={isOptimizedRouteOpen} route={optimizedRoute}/> */}
       </div>
     </div>
 

@@ -11,7 +11,12 @@ interface EditProjectFormProps {
 }
 
 export default function EditProjectForm({ projectData, placesData }: EditProjectFormProps) {
-
+  const projectId = projectData.id;
+  const userData = {
+    email: projectData.creator,
+    nickname: 'testNickname',
+    img: 'testImg'
+  }
 
   return (
     <div className="flex flex-1 overflow-hidden">
@@ -22,10 +27,10 @@ export default function EditProjectForm({ projectData, placesData }: EditProject
         />
       </div>
       <div className="w-1/2 h-full">
-        <NaverMap />
+        <NaverMap project={projectData} />
       </div>
       <div className="w-1/6 h-full overflow-y-auto no-scrollbar">
-        <ChatBox />
+        <ChatBox projectId={projectId} userData={userData}/>
       </div>
     </div>
   )
