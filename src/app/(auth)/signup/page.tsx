@@ -1,12 +1,24 @@
-import Link from 'next/link'
+'use client'
 
+import Link from 'next/link'
 import { AuthLayout } from '@/components/auth/AuthLayout'
 import { Button } from '@/components/auth/Button'
 import { SelectField, TextField } from '@/components/auth/Fields'
-import "react-datepicker/dist/react-datepicker.css";
 import { signupFetch } from '@/app/(auth)/signup/actions'
+import { useState } from 'react'
 
-export default function Register() {
+export default function Signup() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+    await signupFetch(formData);
+    // 다시 버튼을 활성화 시키는 로직 필요
+
+  };
   return (
     <AuthLayout
       title="Sign up for an account"
@@ -20,7 +32,7 @@ export default function Register() {
         </>
       }
     >
-      <form action={signupFetch}>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-6">
           <TextField
             className="col-span-full"
@@ -55,7 +67,7 @@ export default function Register() {
             required
           />
         </div>
-        <Button type="submit" color="cyan" className="mt-8 w-full">
+        <Button type="submit" color="cyan" className="mt-8 w-full" disabled={isSubmitting}>
           회원가입
         </Button>
       </form>
