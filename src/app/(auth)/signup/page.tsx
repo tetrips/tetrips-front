@@ -9,6 +9,7 @@ import { useState } from 'react'
 
 export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checked, setChecked] = useState(0);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,6 +20,13 @@ export default function Signup() {
     // 다시 버튼을 활성화 시키는 로직 필요
 
   };
+
+  const handleEmailCheck = async() => {
+    setChecked(checked + 1);
+  }
+  const handleNicknameCheck = async() => {
+    setChecked(checked + 1);
+  }
   return (
     <AuthLayout
       title="Sign up for an account"
@@ -34,14 +42,17 @@ export default function Signup() {
     >
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-6">
-          <TextField
-            className="col-span-full"
-            label="Email address"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
+          <div className="col-span-full flex items-end space-x-4">
+            <TextField
+              className="col-span-full"
+              label="Email address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+            />
+            <button type="button" onClick={handleEmailCheck} className="h-10 px-4 py-2 bg-gray-200 rounded-md">중복 체크</button>
+          </div>
           <TextField
             className="col-span-full"
             label="Password"
@@ -50,12 +61,15 @@ export default function Signup() {
             autoComplete="new-password"
             required
           />
+          <div className="col-span-full flex items-end space-x-4">
           <TextField
             label="Nickname"
             name="nickname"
             type="text"
             required
           />
+          <button type="button" onClick={handleNicknameCheck} className="h-10 px-4 py-2 bg-gray-200 rounded-md">중복 체크</button>
+          </div>
           <SelectField label="성별" name="gender">
             <option value="ture">남성</option>
             <option value="false">여성</option>
@@ -67,7 +81,7 @@ export default function Signup() {
             required
           />
         </div>
-        <Button type="submit" color="cyan" className="mt-8 w-full" disabled={isSubmitting}>
+        <Button type="submit" color="cyan" className={`mt-8 w-full ${isSubmitting || checked !== 2 ? 'bg-gray-200' : ''}`} disabled={isSubmitting || checked !== 2}>
           회원가입
         </Button>
       </form>
