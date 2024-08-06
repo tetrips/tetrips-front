@@ -28,6 +28,8 @@ export async function fetchPlaces(query: string) {
       roadAddress: place.roadAddress,
       mapx: place.mapx,
       mapy: place.mapy,
+      category: place.category,
+      link: place.link,
     })) as ClientPlace[];
     return places;
   } catch (error) {

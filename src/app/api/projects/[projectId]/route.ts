@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }: { params: { projectI
       await projectCollection.updateOne(
         { 
           _id: new ObjectId(projectId),
-          "itineraries.id": itinerary.id
+          "itineraries.itineraryId": itinerary.itineraryId
         },
         { 
           $set: {
