@@ -6,11 +6,13 @@ import { Button } from '@/components/auth/Button'
 import { SelectField, TextField } from '@/components/auth/Fields'
 import { signupFetch } from '@/app/(auth)/signup/actions'
 import { useState } from 'react'
+import { existsEmailCheck, existsNicknameCheck } from '@/services/existsCheck'
+import { redirect } from 'next/navigation'
 
 export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checked, setChecked] = useState(0);
-
+  const [checked, setChecked] = useState(0);//
+// 체크 확인에 대한 로직 수정해야 함 이메일만 두번 체크해도 가입 요청이 가능
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -21,11 +23,41 @@ export default function Signup() {
 
   };
 
-  const handleEmailCheck = async() => {
-    setChecked(checked + 1);
+  const handleEmailCheck = async(event: React.MouseEvent<HTMLButtonElement>) => {
+    const form = event.currentTarget.closest('form');
+    if (form) {
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+      let result = await existsEmailCheck(email);
+      if(result==='success') {
+        alert('사용 가능한 이메일 입니다.')
+        setChecked(checked + 1);
+      }
+      else if(result==='fail'){
+        alert('이미 사용중인 이메일입니다.');
+      }
+      else {
+        redirect('/error/back');
+      }
+    }
   }
-  const handleNicknameCheck = async() => {
-    setChecked(checked + 1);
+  const handleNicknameCheck = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const form = event.currentTarget.closest('form');
+    if (form) {
+      const formData = new FormData(form);
+      const nickname = formData.get('nickname') as string;
+      let result = await existsNicknameCheck(nickname);
+      if(result ==='success') {
+        alert('사용 가능한 닉네임 입니다.')
+        setChecked(checked + 1);
+      }
+      else if(result ==='fail'){
+        alert('이미 사용중인 닉네임입니다.');
+      }
+      else {
+        redirect('/error/back');
+      }
+    }
   }
   return (
     <AuthLayout
@@ -82,7 +114,7 @@ export default function Signup() {
             required
           />
         </div>
-        <Button type="submit" color="cyan" className={`mt-8 w-full ${isSubmitting || checked !== 2 ? 'bg-gray-200' : ''}`} disabled={isSubmitting || checked !== 2}>
+        <Button type="submit" color="cyan" className={`mt-8 w-full ${isSubmitting || checked < 2 ? 'bg-gray-200' : ''}`} disabled={isSubmitting || checked < 2}>
           회원가입
         </Button>
       </form>
