@@ -13,7 +13,8 @@ export async function existsEmailCheck(email:string){
   }
 }
 export async function existsNicknameCheck(nickname : string){
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${encodeURIComponent(nickname)}`, {
+  // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${encodeURIComponent(nickname)}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${nickname}`, {
   });
   console.log(response);
   if(response.status === 209){
