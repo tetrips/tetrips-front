@@ -5,8 +5,8 @@ import { fetchProjectsByUserId } from '@/services/projectService';
 
 
 export default async function Page() {
-  const username = "testUser";
-  const projects = await fetchProjectsByUserId(username);
+  const userEmail = "testUser@naver.com";
+  const projects = await fetchProjectsByUserId(userEmail);
 
   if (!projects|| projects.length === 0) {
     return (
