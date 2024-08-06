@@ -44,14 +44,14 @@ export default function Signup() {
         <div className="grid grid-cols-2 gap-6">
           <div className="col-span-full flex items-end space-x-4">
             <TextField
-              className="col-span-full"
+              className="w-full"
               label="Email address"
               name="email"
               type="email"
               autoComplete="email"
               required
             />
-            <button type="button" onClick={handleEmailCheck} className="h-10 px-4 py-2 bg-gray-200 rounded-md">중복 체크</button>
+            <button type="button" onClick={handleEmailCheck} className="p-2 bg-gray-200 rounded-md min-w-[8rem]">중복 체크</button>
           </div>
           <TextField
             className="col-span-full"
@@ -63,12 +63,13 @@ export default function Signup() {
           />
           <div className="col-span-full flex items-end space-x-4">
           <TextField
+            className="w-full"
             label="Nickname"
             name="nickname"
             type="text"
             required
           />
-          <button type="button" onClick={handleNicknameCheck} className="h-10 px-4 py-2 bg-gray-200 rounded-md">중복 체크</button>
+          <button type="button" onClick={handleNicknameCheck} className="p-2 bg-gray-200 rounded-md min-w-[8rem]">중복 체크</button>
           </div>
           <SelectField label="성별" name="gender">
             <option value="ture">남성</option>
