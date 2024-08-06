@@ -13,8 +13,12 @@ export async function existsEmailCheck(email:string){
   }
 }
 export async function existsNicknameCheck(nickname : string){
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${encodeURIComponent(nickname)}`, {
-  // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${nickname}`, {
+  const encoder = new TextEncoder();
+  const encodedNickname = Array.from(encoder.encode(nickname))
+    .map(byte => '%' + byte.toString(16).padStart(2, '0'))
+    .join('');
+// utf-8로 인코딩 후 url-safe 인코딩
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/exists-nickname?nickname=${encodedNickname}`, {
   });
   console.log(response);
   if(response.status === 209){

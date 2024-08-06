@@ -11,6 +11,7 @@ export async function signupFetch(formData: FormData) {
     gender: (formData.get('gender') as string) === 'true',
     birthDate: formData.get('birth-date') as string,
   }
+  console.log(data)
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
       method: 'POST',
