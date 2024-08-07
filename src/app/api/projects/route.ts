@@ -37,14 +37,14 @@ export async function POST(request: NextRequest) {
       currentDate.setDate(currentDate.getDate() + 1);
     }
     const guests: Guest[] = [{
-      email: username,
+      email: creator,
       nickname: 'testNickname' || '',
       img: 'testImg' || ''
     }];
     const newProject: Project = {
       _id: new ObjectId(),
       title: data.title,
-      creator: username,
+      creator: creator,
       startDate: startDateUTC,
       endDate: endDateUTC,
       createdAt: createdAt,
