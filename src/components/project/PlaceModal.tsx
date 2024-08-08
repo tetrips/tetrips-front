@@ -1,8 +1,10 @@
 'use client'
 import { useState } from 'react';
-import { ClientPlace } from '@/types/Place';
 import PlaceList from './PlaceList';
 import NaverSearchPlaceList from './NaverSearchPlaceList';
+import { ClientPlace } from '@/types/Place';
+
+
 
 interface PlaceModalProps {
   onClose: () => void;
@@ -56,7 +58,5 @@ export default function PlaceModal({ onClose, purpose, onPlaceSelect, initialPla
         </div>
       </div>
     </div>
-
-
   );
 }

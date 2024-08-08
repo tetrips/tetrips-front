@@ -25,16 +25,16 @@ export interface ClientProject {
 export interface Guest {
   email: string;
   nickname: string;
-  img: string;
+  img?: string;
 }
 
 export interface Itinerary {
-  id: string;
+  itineraryId: string;
   date: string;
   dayStartTime: string;
   startPlace?: Destination;
   endPlace?: Destination;
-  destinations?: Destination[];
+  destinations: Destination[];
 }
 
 export interface Destination {

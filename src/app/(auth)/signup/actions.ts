@@ -1,13 +1,17 @@
 'use server'
 
+import { redirect } from 'next/navigation'
+
 export async function signupFetch(formData: FormData) {
+  let redi = true
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
     nickname: formData.get('nickname') as string,
-    gender: formData.get('gender') as string,
+    gender: (formData.get('gender') as string) === 'true',
     birthDate: formData.get('birth-date') as string,
   }
+  console.log(data)
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
       method: 'POST',
@@ -19,5 +23,12 @@ export async function signupFetch(formData: FormData) {
     console.log(res)
     } catch (error) {
       console.log(error)
+    redi= false
+    }
+    if(redi) {
+      redirect('/login')
+    }
+    else{
+      redirect('/error/back')
     }
   }

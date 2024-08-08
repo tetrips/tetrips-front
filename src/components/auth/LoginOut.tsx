@@ -7,6 +7,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 // @ts-ignore
 import { getCookie } from '@/libs/cookieUtils'
 import { deleteUserCookie } from '@/app/(auth)/logout/actions'
+import postLogout from '@/services/postLogout'
 
 
 function classNames(...classes: string[]) {
@@ -14,11 +15,13 @@ function classNames(...classes: string[]) {
 }
 
 export default function LoginOut() {
+
   const [username, setUsername] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleLogout = async () => {
     await deleteUserCookie()
+    await postLogout()
     window.location.reload();
   }
 
@@ -69,14 +72,14 @@ export default function LoginOut() {
           </Link>
         </div>
         <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-          <button
+  {/*        <button
             type="button"
             className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <span className="absolute -inset-1.5" />
             <span className="sr-only">View notifications</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
+          </button>*/} {/* 알림 버튼입니다. */}
 
           {/* Profile dropdown */}
           <Menu as="div" className="relative ml-3">
@@ -102,7 +105,7 @@ export default function LoginOut() {
             >
               <MenuItems
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <MenuItem>
+{/*                <MenuItem>
                   {({ focus }) => (
                     <a
                       href="#"
@@ -114,11 +117,11 @@ export default function LoginOut() {
                       Your Profile
                     </a>
                   )}
-                </MenuItem>
+                </MenuItem>*/} {/* 프로필 페이지로 이동하는 버튼입니다. */}
                 <MenuItem>
                   {({ focus }) => (
                     <a
-                      href="#"
+                      href="/mypage/user"
                       className={classNames(
                         focus ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700',

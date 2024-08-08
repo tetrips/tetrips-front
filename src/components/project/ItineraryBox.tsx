@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { ClientPlace } from '@/types/Place';
-import { useProjectStore } from '@/stores/projectStore';
-import { ClientProject, Destination, Itinerary as ItineraryType } from '@/types/Project';
+import { useState } from 'react';
 import ItineraryTabs from './ItineraryTabs';
 import ItineraryDayView from './ItineraryDayView';
 import { v4 as uuidV4 } from 'uuid';
 import PlaceModal from './PlaceModal';
+import { useYjs } from '@/hooks/useYjs';
+import { ClientPlace } from '@/types/Place';
+import { ClientProject, Destination } from '@/types/Project';
 
 interface ItineraryProps {
   project: ClientProject;
@@ -16,33 +16,24 @@ interface ItineraryProps {
 
 export default function ItineraryBox({ project, initialPlaces }: ItineraryProps) {
   const {
-    setCurrentProject,
     itineraries, 
-    updateItinerary, 
+    updateDayStartTime, 
     addDestination, 
     removeDestination, 
     reorderDestinations,
     updateDestinationDuration,
     setStartPlace,
     setEndPlace,
-    updateMarkers
-  } = useProjectStore();
+  } = useYjs({project});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [activeDay, setActiveDay] = useState(0);
   const [modalPurpose, setModalPurpose] = useState<'start' | 'end' | 'add'>();
 
-  useEffect(() => {
-    updateMarkers();
-    setCurrentProject(project)
-  }, [project, setCurrentProject, updateMarkers]);
-
-
-
-  const handleOpenModal = (purpose: 'start' | 'end' | 'add', date: string) => {
+  const handleOpenModal = (purpose: 'start' | 'end' | 'add', itineraryId: string) => {
     setModalPurpose(purpose);
-    setSelectedDate(date);
+    setSelectedDate(itineraryId);
     setIsModalOpen(true);
   };
 
@@ -50,9 +41,7 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
     setIsModalOpen(false);
   };
 
-  const handleItineraryChange = (updatedItinerary: ItineraryType) => {
-    updateItinerary(updatedItinerary.date, updatedItinerary);
-  };
+
 
   const handlePlaceSelect = (place: ClientPlace) => {
     const destination: Destination = {
@@ -69,18 +58,14 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
 
     if (modalPurpose === 'start') {
       setStartPlace(selectedDate, destination);
-      updateMarkers();
     } else if (modalPurpose === 'end') {
       setEndPlace(selectedDate, destination);
-      updateMarkers();
     } else {
       addDestination(selectedDate, destination);
-      updateMarkers();
     }
+
     handleCloseModal();
   };
-
-
 
   const currentItinerary = itineraries[activeDay];
 
@@ -99,11 +84,11 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <ItineraryDayView 
             itinerary={currentItinerary} 
-            onOpenModal={(purpose) => handleOpenModal(purpose, currentItinerary.date)}
-            onItineraryChange={handleItineraryChange}
-            removeDestination={(destinationId) => removeDestination(currentItinerary.date, destinationId)}
-            reorderDestinations={(newOrder) => reorderDestinations(currentItinerary.date, newOrder)}
-            updateDestinationDuration={(destinationId, duration) => updateDestinationDuration(currentItinerary.date, destinationId, duration)}
+            onOpenModal={(purpose) => handleOpenModal(purpose, currentItinerary.itineraryId)}
+            onItineraryChange={(newDayStartTime) => updateDayStartTime(currentItinerary.itineraryId, newDayStartTime)}
+            removeDestination={(destinationId) => removeDestination(currentItinerary.itineraryId, destinationId)}
+            reorderDestinations={(newOrder) => reorderDestinations(currentItinerary.itineraryId, newOrder)}
+            updateDestinationDuration={(destinationId, duration) => updateDestinationDuration(currentItinerary.itineraryId, destinationId, duration)}
           />
         </div>
       </div>

@@ -2,27 +2,32 @@ import clientPromise from '@/libs/mongodb';
 import { Project, Itinerary, Guest } from '@/types/Project';
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import { convertToKoreanDate } from '@/utils/formatTime';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
+
   const client = await clientPromise;
   const db = client.db('travel');
   const projectCollection = db.collection('projects');
 
   try {
     const data = await request.json();
-    const createdAt = new Date();
-    const startDate = new Date(data.startDate);
-    const endDate = new Date(data.endDate);
+    const createdAt = convertToKoreanDate(new Date());
+    const startDate = convertToKoreanDate(new Date(data.startDate));
+    const endDate = convertToKoreanDate(new Date(data.endDate));
     const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
+    const creator = 'testUser@naver.com';
+    const usernameData = cookies().get('username');
     
-    const creator = 'testUser'; 
+    const username = JSON.stringify(usernameData);
     const itineraries: Itinerary[] = [];
 
     let currentDate = new Date(startDateUTC);
     while (currentDate <= endDateUTC) {
       itineraries.push({
-        id: new ObjectId().toString(),
+        itineraryId: new ObjectId().toString(),
         date: currentDate.toISOString().split('T')[0],
         dayStartTime: '10:00',
         startPlace: undefined,
@@ -31,13 +36,11 @@ export async function POST(request: NextRequest) {
       });
       currentDate.setDate(currentDate.getDate() + 1);
     }
-
     const guests: Guest[] = [{
       email: creator,
-      nickname: 'Creator',
-      img: '/profile.png' 
+      nickname: 'testNickname' || '',
+      img: 'testImg' || ''
     }];
-
     const newProject: Project = {
       _id: new ObjectId(),
       title: data.title,

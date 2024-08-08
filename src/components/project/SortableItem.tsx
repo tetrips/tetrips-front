@@ -1,21 +1,18 @@
 'use client'
+import { Destination } from '@/types/Project';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Destination } from '@/types/Project';
 import { ListBulletIcon, MinusIcon } from '@heroicons/react/24/outline';
-import { useProjectStore } from '@/stores/projectStore';
-
 
 interface SortableItemProps {
   id: string;
   destination: Destination;
-  date: string;
   updateDestinationDuration: (destinationId: string, duration: number) => void;
-  removeDestination: (date: string, destinationId: string) => void;
+  removeDestination: (destinationId: string) => void;
 }
 
-export function SortableItem({ id, destination, date, updateDestinationDuration, removeDestination }: SortableItemProps) {
-  const {updateMarkers} = useProjectStore();
+export function SortableItem({ id, destination, updateDestinationDuration, removeDestination }: SortableItemProps) {
+
   const {
     attributes,
     listeners,
@@ -28,13 +25,6 @@ export function SortableItem({ id, destination, date, updateDestinationDuration,
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  const handleDelete = () => {
-
-    useProjectStore.getState().removeDestination(date, destination.id);
-    updateMarkers();
-    
-  }
-  
 
   return (
     <div 
@@ -63,7 +53,7 @@ export function SortableItem({ id, destination, date, updateDestinationDuration,
         />
         <span className="text-sm">분</span>
         <button
-          onClick={handleDelete}
+          onClick={() => removeDestination(destination.id)}
           className="text-red-500 p-1 hover:bg-red-100 rounded flex items-center justify-center w-7 h-7"
           aria-label="삭제"
         >
@@ -73,4 +63,3 @@ export function SortableItem({ id, destination, date, updateDestinationDuration,
     </div>
   );
 }
-
