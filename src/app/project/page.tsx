@@ -10,7 +10,7 @@ export default async function Page() {
   const userEmail = "testUser@naver.com";
   const username = cookies().get('username');
 
-  const projects = await fetchProjectsByUserId(JSON.stringify(userEmail));
+  const projects = await fetchProjectsByUserId(userEmail);
 
   if (!projects|| projects.length === 0) {
     return (

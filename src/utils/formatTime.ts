@@ -1,6 +1,6 @@
+import { toZonedTime } from "date-fns-tz";
 
 export function convertToKoreanDate(date: Date): Date {
-  const koreanTimeOffset = 9 * 60;
-  const utcTime = date.getTime() + date.getTimezoneOffset() * 60000;
-  return new Date(utcTime + koreanTimeOffset * 60000);
+  const timeZone = 'Asia/Seoul'; 
+  return toZonedTime(date, timeZone);
 }
