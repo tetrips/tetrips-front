@@ -1,7 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+'use client'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { ClientProject } from '@/types/Project';
+
 
 interface MarkerData {
   id: string;
@@ -35,6 +37,7 @@ interface Itinerary {
   endPlace?: Destination;
   destinations: Destination[];
 }
+
 const initializeItineraries = (doc: Y.Doc, project: ClientProject) => {
   const yItineraries = doc.getArray<Itinerary>('itineraries');
   
@@ -54,16 +57,14 @@ const initializeItineraries = (doc: Y.Doc, project: ClientProject) => {
 
 export function useYjs({ project }: { project: ClientProject }) {
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
-  const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const projectId = project.id;
+  const initialItineraryCount = useRef(project.itineraries.length);
 
-  const updateMarkers = useCallback((currentItineraries: Itinerary[], doc: Y.Doc) => {
-    const yMarkers = doc.getArray<MarkerData>('markers');
-    
+  const markers = useMemo(() => {
     const newMarkers: MarkerData[] = [];
-    currentItineraries.forEach(itinerary => {
+    itineraries.forEach(itinerary => {
       if (itinerary.startPlace) {
         newMarkers.push(createMarkerData('start', itinerary.startPlace));
       }
@@ -74,28 +75,9 @@ export function useYjs({ project }: { project: ClientProject }) {
         newMarkers.push(createMarkerData('end', itinerary.endPlace));
       }
     });
+    return newMarkers;
+  }, [itineraries]);
 
-    const uniqueNewMarkers = newMarkers.filter((marker, index, self) =>
-      index === self.findIndex((t) => t.id === marker.id)
-    );
-  
-    const currentMarkers = yMarkers.toArray();
-    const markersChanged = 
-      uniqueNewMarkers.length !== currentMarkers.length ||
-      uniqueNewMarkers.some((marker, index) => !isMarkerEqual(marker, currentMarkers[index]));
-  
-    if (markersChanged) {
-      doc.transact(() => {
-        yMarkers.delete(0, yMarkers.length);
-        yMarkers.insert(0, uniqueNewMarkers);
-      });
-      setMarkers(uniqueNewMarkers);
-    }
-  }, []);
-
-  const isMarkerEqual = useCallback((a: MarkerData, b: MarkerData) => {
-    return a.id === b.id && a.mapx === b.mapx && a.mapy === b.mapy;
-  }, []);
 
   useEffect(() => {
     const doc = new Y.Doc();
@@ -107,25 +89,21 @@ export function useYjs({ project }: { project: ClientProject }) {
         if (yItineraries.length === 0) {
           initializeItineraries(doc, project);
         }
-        updateItineraries(doc);
+        updateItineraries();
       }
     });
 
     wsProvider.connect();
 
     const yItineraries = doc.getArray<Itinerary>('itineraries');
-    const yMarkers = doc.getArray<MarkerData>('markers');
 
-    const updateItineraries = (doc: Y.Doc) => {
-      const updatedItineraries = yItineraries.toArray();
+    const updateItineraries = () => {
+      const updatedItineraries = yItineraries.toArray().slice(0, initialItineraryCount.current);
       setItineraries(updatedItineraries);
-      updateMarkers(updatedItineraries, doc);
     };
 
-    yItineraries.observe(() => updateItineraries(doc));
-    yMarkers.observe(() => setMarkers(yMarkers.toArray()));
+    yItineraries.observe(updateItineraries);
 
-    updateItineraries(doc);
 
     setYdoc(doc);
 
@@ -133,21 +111,43 @@ export function useYjs({ project }: { project: ClientProject }) {
       wsProvider.destroy();
       doc.destroy();
     };
-  }, [project, projectId, updateMarkers]);
+  }, [project, projectId]);
 
-  const updateItinerary = useCallback((itineraryId: string, updater: (itinerary: Itinerary) => Itinerary) => {
+  const sortItineraries = (itineraries: Itinerary[]): Itinerary[] => {
+    return [...itineraries].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  };
+  
+  const mergeItineraries = (original: Itinerary, updated: Partial<Itinerary>): Itinerary => ({
+    ...original,
+    ...updated,
+    itineraryId: original.itineraryId,
+    date: original.date,
+    destinations: updated.destinations || original.destinations,
+  });
+  
+  const updateItinerary = useCallback((itineraryId: string, updater: (itinerary: Itinerary) => Partial<Itinerary>) => {
     if (!ydoc) return;
     const yItineraries = ydoc.getArray<Itinerary>('itineraries');
     ydoc.transact(() => {
-      const index = yItineraries.toArray().findIndex(i => i.itineraryId === itineraryId);
+      let itineraries = yItineraries.toArray();
+      const index = itineraries.findIndex(i => i.itineraryId === itineraryId);
+      
       if (index !== -1) {
-        const currentItinerary = yItineraries.get(index);
-        const updatedItinerary = updater(currentItinerary);
-        yItineraries.delete(index, 1);
-        yItineraries.insert(index, [updatedItinerary]);
+        const originalItinerary = itineraries[index];
+        const updatedFields = updater(originalItinerary);
+        const mergedItinerary = mergeItineraries(originalItinerary, updatedFields);
+        itineraries[index] = mergedItinerary;
+      } else if (itineraries.length < initialItineraryCount.current) {
+        const newItinerary = updater({ itineraryId, date: '', dayStartTime: '', destinations: [] } as Itinerary);
+        itineraries.push(newItinerary as Itinerary);
       }
+  
+      itineraries = sortItineraries(itineraries.slice(0, initialItineraryCount.current));
+      
+      yItineraries.delete(0, yItineraries.length);
+      yItineraries.insert(0, itineraries);
     });
-  }, [ydoc]);
+  }, [ydoc, initialItineraryCount]);
 
   const updateDayStartTime = useCallback((itineraryId: string, newDayStartTime: string) => {
     updateItinerary(itineraryId, itinerary => ({ ...itinerary, dayStartTime: newDayStartTime }));

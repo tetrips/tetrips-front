@@ -3,8 +3,10 @@ import { Project, Itinerary, Guest } from '@/types/Project';
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { convertToKoreanDate } from '@/utils/formatTime';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
+
   const client = await clientPromise;
   const db = client.db('travel');
   const projectCollection = db.collection('projects');
@@ -17,6 +19,9 @@ export async function POST(request: NextRequest) {
     const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
     const creator = 'testUser@naver.com';
+    const usernameData = cookies().get('username');
+    
+    const username = JSON.stringify(usernameData);
     const itineraries: Itinerary[] = [];
 
     let currentDate = new Date(startDateUTC);
