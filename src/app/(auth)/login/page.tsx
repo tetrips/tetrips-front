@@ -10,13 +10,15 @@ import { TextField } from '@/components/auth/Fields';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isError, setIsError] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/test/login`, {
-        // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
+      // const res = await fetch(`http://localhost:3000/test/login`, {
+      const res = await fetch(`/api/cookie/return/first`, {
+      //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,9 +32,13 @@ export default function Login() {
         window.location.href = '/';
       } else {
         console.error('Login failed');
+        setIsError(true);
       }
     } catch (error) {
       console.error('An error occurred:', error);
+    }
+    if(isError) {
+      alert('로그인 실패');
     }
   };
 
@@ -42,7 +48,7 @@ export default function Login() {
       subtitle={
         <>
           회원이 아니신가요?{' '}
-          <Link href="/register" className="text-cyan-600">
+          <Link href="/signup" className="text-cyan-600">
             여기
           </Link>{' '}
           를 눌러 가입하세요.
