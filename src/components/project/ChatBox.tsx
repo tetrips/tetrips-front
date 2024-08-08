@@ -22,6 +22,7 @@ export default function ChatBox({ projectId, userData }: { projectId: string, us
   const [error, setError] = useState<string | null>(null);
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const userId = userData.email;
   const nickname = userData.nickname;
@@ -53,7 +54,7 @@ export default function ChatBox({ projectId, userData }: { projectId: string, us
     };
 
     yarray.observe(updateMessages);
-    updateMessages(); // 초기 메시지 로딩
+    updateMessages();
 
     return () => {
       if (providerRef.current) {
@@ -64,6 +65,12 @@ export default function ChatBox({ projectId, userData }: { projectId: string, us
       }
     };
   }, [projectId]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const sendMessage = useCallback(() => {
     if (input.trim() && ydocRef.current && isConnected) {
@@ -80,41 +87,52 @@ export default function ChatBox({ projectId, userData }: { projectId: string, us
     }
   }, [input, nickname, userId, projectId, isConnected]);
 
-  const messagesList = messages.map((msgObj, index) => (
-    <div key={`${msgObj.userId}-${msgObj.timestamp}`} className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}>
-      {msgObj.userId !== userId && (
-        <div className="flex flex-col items-center mr-2">
-          <div className="w-8 h-8 rounded-full bg-color6 text-white flex items-center justify-center">
-            {msgObj.nickname.charAt(0)}
-          </div>
-        </div>
-      )}
-      <div className="flex flex-col space-y-1 text-xs max-w-xs">
+  const formatTimestamp = useCallback((timestamp: number) => {
+    return new Date(timestamp).toLocaleString();
+  }, []);
+  
+  const messagesList = messages.map((msgObj, index) => {
+    const messageTime = formatTimestamp(msgObj.timestamp);
+  
+    return (
+      <div key={`${msgObj.userId}-${msgObj.timestamp}`} className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}>
         {msgObj.userId !== userId && (
-          <div className="text-gray-600 text-center">
-            {msgObj.nickname}
+          <div className="flex flex-col items-center mr-2">
+            <div className="w-8 h-8 rounded-full bg-color6 text-white flex items-center justify-center">
+              {msgObj.nickname.charAt(0)}
+            </div>
           </div>
         )}
-        <div className={`px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-color2 text-white' : 'bg-gray-300 text-gray-600'}`}>
-          {msgObj.message}
-        </div>
-      </div>
-      {msgObj.userId === userId && (
-        <div className="flex flex-col items-center ml-2">
-          <div className="w-8 h-8 rounded-full bg-color6 text-white flex items-center justify-center">
-            {msgObj.nickname.charAt(0)}
+        <div className="flex flex-col space-y-1 text-xs max-w-xs">
+          {msgObj.userId !== userId && (
+            <div className="text-gray-600">
+              {msgObj.nickname}
+            </div>
+          )}
+          <div className={`px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-cyan-500 text-white' : 'bg-gray-300 text-gray-600'}`}>
+            {msgObj.message}
+          </div>
+          <div className="text-gray-500 mt-1">
+            {messageTime}
           </div>
         </div>
-      )}
-    </div>
-  ));
-
+        {msgObj.userId === userId && (
+          <div className="flex flex-col items-center ml-2">
+            <div className="w-8 h-8 rounded-full bg-color6 text-white flex items-center justify-center">
+              {msgObj.nickname.charAt(0)}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  });
+  
   return (
-    <div className="bg-white flex flex-col w-full h-full">
+    <div className="bg-white flex flex-col w-full h-full relative">
       {!isConnected && (
-        <div className="text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">연결 끊김!</strong>
-          <span className="block sm:inline"> 재연결 중입니다...</span>
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex flex-col items-center justify-center z-10">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-white mb-4"></div>
+          <p className="text-white text-lg">연결 중...</p>
         </div>
       )}
       {error && (
@@ -132,15 +150,15 @@ export default function ChatBox({ projectId, userData }: { projectId: string, us
         <div className="flex-none bg-white py-3 pr-2">
           <div className="flex items-center space-x-2">
             <input
-              className="flex-1 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="flex-1 py-2 px-1 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="여기에 메시지를 입력하세요..."
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
             />
             <button
-              className="p-2 bg-color2 text-white rounded w-10"
+              className="p-2 bg-cyan-500 text-white rounded w-10"
               onClick={sendMessage}
               disabled={!isConnected}
             >
