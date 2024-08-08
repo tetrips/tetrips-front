@@ -17,7 +17,7 @@ const secondaryNavigation = [
   { name: '회원 탈퇴', href: '/mypage/withdraw', icon: UsersIcon, current: false },
 ]
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
