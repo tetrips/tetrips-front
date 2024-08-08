@@ -18,11 +18,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const cookieStore = cookies()
   return (
     <html lang="ko" className={GeistSans.className}>
       <body>
-      <Header />
       <Script
           src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NAVER_MAPS_API_KEY}&submodules=geocoder`}
           strategy="beforeInteractive"
