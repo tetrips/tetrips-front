@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 
 export function userCheck() {
   const username = cookies().get('username')
-  if (username === undefined) {
+  if (!username) {
     redirect('/login')
   }
 }
