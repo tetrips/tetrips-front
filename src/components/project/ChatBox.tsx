@@ -110,6 +110,8 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   useEffect(() => {
     fetchMessages();
+    const intervalId = setInterval(fetchMessages, 3000);
+    return () => clearInterval(intervalId);
   }, [fetchMessages]);
 
   useEffect(() => {
