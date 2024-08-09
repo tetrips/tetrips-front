@@ -21,7 +21,7 @@ export default async function Page({
   if(!usernameData){
     redirect('/login');
   }
-  const username = JSON.stringify(usernameData);
+  const username = usernameData.value;
   const userData= {
     email: username,
     nickname: username.split('@')[0],
