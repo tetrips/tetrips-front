@@ -1,46 +1,43 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { AuthLayout } from '@/components/auth/AuthLayout';
-import { Button } from '@/components/auth/Button';
-import { TextField } from '@/components/auth/Fields';
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Button } from '@/components/auth/Button'
+import { TextField } from '@/components/auth/Fields'
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isError, setIsError] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isError, setIsError] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       // const res = await fetch(`http://localhost:3000/test/login`, {
       const res = await fetch(`/api/cookie/return/first`, {
-      //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
+        //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      });
+      })
 
       if (res.ok) {
-        console.log(res);
+        console.log(res)
         // router.push('/');
-        window.location.href = '/';
+        window.location.href = '/'
       } else {
-        console.error('Login failed');
-        setIsError(true);
+        console.error('Login failed')
+        setIsError(true)
       }
     } catch (error) {
-      console.error('An error occurred:', error);
+      console.error('An error occurred:', error)
     }
-    if(isError) {
-      alert('로그인 실패');
-    }
-  };
+  }
 
   return (
     <AuthLayout
@@ -76,14 +73,13 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button
-          type="submit"
-          color="cyan"
-          className="mt-8 w-full"
-        >
+        {isError ? (
+          <p className="text-red-600">아이디나 비밀번호가 틀렸습니다.</p>
+        ) : null}
+        <Button type="submit" color="cyan" className="mt-8 w-full">
           로그인
         </Button>
       </form>
     </AuthLayout>
-  );
+  )
 }

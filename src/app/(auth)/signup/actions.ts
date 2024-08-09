@@ -8,7 +8,7 @@ export async function signupFetch(formData: FormData) {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
     nickname: formData.get('nickname') as string,
-    gender: (formData.get('gender') as string) === 'true',
+    gender: formData.get('gender') ? 'true' : 'false',
     birthDate: formData.get('birth-date') as string,
   }
   console.log(data)
@@ -19,16 +19,15 @@ export async function signupFetch(formData: FormData) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-      });
+    })
     console.log(res)
-    } catch (error) {
-      console.log(error)
-    redi= false
-    }
-    if(redi) {
-      redirect('/login')
-    }
-    else{
-      redirect('/error/back')
-    }
+  } catch (error) {
+    console.log(error)
+    redi = false
   }
+  if (redi) {
+    redirect('/login')
+  } else {
+    redirect('/error/back')
+  }
+}
