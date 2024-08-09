@@ -12,14 +12,14 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isError, setIsError] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    const username = Cookies.get('username')
-    if (username) {
-      router.push('/')
-    }
-  }, [router])
+  // const router = useRouter()
+  //
+  // useEffect(() => {
+  //   const username = Cookies.get('username')
+  //   if (username) {
+  //     router.push('/')
+  //   }
+  // }, [router])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
