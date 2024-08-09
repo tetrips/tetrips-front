@@ -19,6 +19,7 @@ export const getUserInfo = async () => {
           'Content-Type': 'application/json',
           Authorization: token,
         },
+        cache: 'no-store',
       },
     )
     if (res.status === 200) {
