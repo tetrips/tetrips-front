@@ -78,7 +78,7 @@ export async function inviteGuest(projectId: string, email: string, nickname: st
       { _id: new ObjectId(projectId), 'guests.email': { $ne: email } },
       { $addToSet: { guests: guest } }
     );
-    redirect(`/projects/${projectId}`);
+    redirect(`/project/${projectId}`);
   } catch (error) {
     console.error('초대 처리 중 오류 발생:', error);
     throw error; 

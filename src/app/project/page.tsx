@@ -5,11 +5,16 @@ import { fetchProjectsByUserId } from '@/services/projectService'
 import { cookies } from 'next/headers'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
+import { redirect } from 'next/navigation'
+
 
 export default async function Page() {
   const usernameData = cookies().get('username');
+  if (!usernameData) {
+    redirect('/login');
+  }
 
-  const projects = await fetchProjectsByUserId(JSON.stringify(usernameData));
+  const projects = await fetchProjectsByUserId(usernameData.value);
 
   if (!projects || projects.length === 0) {
     return (
