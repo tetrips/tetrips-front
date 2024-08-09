@@ -25,7 +25,7 @@ export interface ClientProject {
 export interface Guest {
   email: string;
   nickname: string;
-  img?: string;
+  img: string;
 }
 
 export interface Itinerary {

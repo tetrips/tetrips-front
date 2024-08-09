@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 
 
 export default async function Page() {
-  const userEmail = "testUser@naver.com";
+  const userEmail = "User1@naver.com";
   const username = cookies().get('username');
 
   const projects = await fetchProjectsByUserId(userEmail);
