@@ -104,7 +104,7 @@ export default function ItineraryDayView({
       alert('동선이 최적화되었습니다.');
     } catch (error) {
       console.error('Route optimization error:', error);
-      alert('동선 최적화 중 오류가 발생했습니다.');
+      alert('시작지점과 종료지점을 모두 입력해주세요.');
     }
   };
   const LocationBox = ({ type, place }: { type: 'start' | 'end', place: Destination | undefined }) => (
@@ -151,13 +151,13 @@ export default function ItineraryDayView({
                 } */}
               <button
                 onClick={() => onOpenModal('add')}
-                className="bg-color2 text-white px-4 py-1 rounded mr-2"
+                className="bg-cyan-500 text-white px-4 py-1 rounded mr-2"
               >
                 추가
               </button>
               <button
                 onClick={handleOptimizeRoute}
-                className="bg-color2 text-white px-4 py-1 rounded"
+                className="bg-cyan-500 text-white px-4 py-1 rounded"
               >
                 최적화
               </button>

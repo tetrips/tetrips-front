@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { proje
       return NextResponse.json({ message: 'Project not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Deleted Project' });
+    return NextResponse.json({ message: 'Deleted Project', status: 200 });
   } catch (error) {
     console.error('Database Error:', error);
     return NextResponse.json({ message: 'Database Error: Failed to Delete Project.' }, { status: 500 });

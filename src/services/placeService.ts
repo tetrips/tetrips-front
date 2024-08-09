@@ -7,6 +7,7 @@ async function getCollection(collectionName: string) {
   const db = client.db('travel');
   return db.collection(collectionName);
 }
+
 export async function fetchPlaces(query: string) {
   noStore();
   try {
@@ -20,7 +21,7 @@ export async function fetchPlaces(query: string) {
         }
       : {};
 
-    const placesData = await placeCollection.find(searchQuery).toArray();
+    const placesData = await placeCollection.find(searchQuery).sort({ title: 1 }).toArray();
 
     const places = placesData.map((place) => ({
       id: place._id.toString(),

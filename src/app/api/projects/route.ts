@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const endDate = convertToKoreanDate(new Date(data.endDate));
     const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
-    const creator = 'testUser@naver.com';
+    const creator = 'user1@naver.com';
     const usernameData = cookies().get('username');
     
     const username = JSON.stringify(usernameData);
@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
     }
     const guests: Guest[] = [{
       email: creator,
-      nickname: 'testNickname' || '',
-      img: 'testImg' || ''
+      nickname: 'User1' || '',
+      img: 'user1.jpg' || ''
     }];
     const newProject: Project = {
       _id: new ObjectId(),

@@ -16,7 +16,7 @@ export default function ItineraryTabs({ itineraries, activeDay, setActiveDay }: 
           key={itinerary.itineraryId}
           className={`p-4 text-left ${
             activeDay === index
-              ? 'bg-color2 text-white'
+              ? 'bg-cyan-500 text-white'
               : 'bg-white text-gray-700 hover:bg-gray-100'
           }`}
           onClick={() => setActiveDay(index)}

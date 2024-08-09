@@ -6,7 +6,7 @@ export function CreateProject() {
   return (
     <Link
       href="/project/create"
-      className="flex h-10 w-36 items-center rounded-lg bg-color8 px-4 text-sm font-medium text-white transition-colors hover:bg-color6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      className="flex h-10 w-36 items-center rounded-lg bg-cyan-500 px-4 text-sm font-medium text-white transition-colors hover:bg-color6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <span className="hidden md:block">Create Project</span>{' '}
     </Link>
@@ -29,6 +29,13 @@ export function DeleteProject({ projectId }: { projectId: string }) {
 
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const confirmed = window.confirm('정말로 이 프로젝트를 삭제하시겠습니까?');
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       const response = await fetch(`/api/projects/${projectId}`, {
         method: 'DELETE',
@@ -40,7 +47,7 @@ export function DeleteProject({ projectId }: { projectId: string }) {
         throw new Error('프로젝트 삭제에 실패했습니다.');
       }
       alert('프로젝트가 성공적으로 삭제되었습니다.');
-      router.push('/project');
+      router.refresh();
 
     } catch (error) {
       console.error('Error deleting project:', error);
@@ -49,12 +56,12 @@ export function DeleteProject({ projectId }: { projectId: string }) {
   };
 
   return (
-    <form onSubmit={handleDelete}>
-      <div className="block px-3 py-1 text-sm text-center leading-6 text-gray-900 data-[focus]:bg-gray-50">
-        <button type="submit">
-          Delete
-        </button>
-      </div>
-    </form>
+    <button
+      onClick={handleDelete}
+      className='block w-32 px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50'
+    >
+      Delete
+    </button>
   );
 }
+
