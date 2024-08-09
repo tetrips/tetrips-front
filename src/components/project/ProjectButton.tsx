@@ -27,6 +27,11 @@ export function UpdateProject({ projectId }: { projectId: string }) {
 export function DeleteProject({ projectId }: { projectId: string }) {
   const router = useRouter();
 
+  const confirmed = window.confirm('정말로 이 프로젝트를 삭제하시겠습니까?');
+
+  if (!confirmed) {
+    return;
+  }
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -40,7 +45,7 @@ export function DeleteProject({ projectId }: { projectId: string }) {
         throw new Error('프로젝트 삭제에 실패했습니다.');
       }
       alert('프로젝트가 성공적으로 삭제되었습니다.');
-      router.push('/project');
+      router.refresh();
 
     } catch (error) {
       console.error('Error deleting project:', error);
