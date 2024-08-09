@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div className="min-h-screen flex">
+    <div className="flex h-screen overflow-hidden">
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
@@ -22,17 +22,14 @@ export default async function Page() {
           </div>
         </div>
       </div>
-      <div className="hidden lg:block relative w-0 flex-1">
+      <div className="hidden lg:block relative w-0 flex-1 overflow-hidden">
         <div className="absolute inset-0 h-full w-full">
           <Image
-            src="/portfolio-3.jpg"
+            src="/sea1.jpg"
             alt="Travel Template Image"
-            width={1920}
-            height={1080}
+            fill={true}
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
           />
-          <div className="h-full flex items-center justify-center text-white text-4xl font-bold">
-            여행 템플릿 이미지
-          </div>
         </div>
       </div>
     </div>
