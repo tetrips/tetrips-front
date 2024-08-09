@@ -3,6 +3,7 @@ import { getAccessToken } from '@/services/getAccessToken'
 export const getNickname = async () => {
   const token = await getAccessToken()
   if (!token) {
+    console.log(token)
     console.log('토큰이 없어서 작업을 수행하지 못했습니다.')
     return null
   }
