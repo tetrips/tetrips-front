@@ -41,7 +41,7 @@ export default function PlaceList({ places, onPlaceSelect }: PlaceListProps) {
               <div className="text-xs text-gray-500">
                 {place.category && <span className="mr-2">{place.category}</span>}
                 {place.link && (
-                  <a href={place.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  <a href={place.link} target="_blank" rel="noopener noreferrer" className="text-blue-800 hover:underline">
                     상세 정보
                   </a>
                 )}

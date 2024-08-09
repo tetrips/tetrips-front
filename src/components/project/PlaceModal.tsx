@@ -29,13 +29,13 @@ export default function PlaceModal({ onClose, purpose, onPlaceSelect, initialPla
         </h2>
         <div className="mb-2">
           <button
-            className={`mr-2 px-4 py-2 rounded text-sm ${activeTab === 'recommended' ? 'bg-color2 text-white' : 'bg-gray-200'}`}
+            className={`mr-2 px-4 py-2 rounded text-sm ${activeTab === 'recommended' ? 'bg-cyan-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setActiveTab('recommended')}
           >
             추천 장소
           </button>
           <button
-            className={`px-4 py-2 rounded text-sm ${activeTab === 'search' ? 'bg-color2 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded text-sm ${activeTab === 'search' ? 'bg-cyan-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setActiveTab('search')}
           >
             네이버 지도 검색
@@ -50,7 +50,7 @@ export default function PlaceModal({ onClose, purpose, onPlaceSelect, initialPla
         </div>
         <div className="mt-4 w-full flex justify-end">
           <button
-            className="px-4 py-2 bg-color7 text-white rounded hover:bg-color6 text-sm"
+            className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-color6 text-sm"
             onClick={onClose}
           >
             닫기
