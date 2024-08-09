@@ -3,6 +3,7 @@ import { Destination } from '@/types/Project';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ListBulletIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { noto } from '../common/fonts';
 
 interface SortableItemProps {
   id: string;
@@ -38,7 +39,7 @@ export function SortableItem({ id, destination, updateDestinationDuration, remov
           className="w-6 h-6 text-gray-400"
         />
       </div>
-      <div className="flex-grow px-2">
+      <div className={`${noto.className} text-left flex-grow px-2`}>
         <p>{destination.title}</p>
 
       </div>

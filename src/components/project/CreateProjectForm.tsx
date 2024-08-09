@@ -100,7 +100,7 @@ export default function CreateProjectForm() {
           <button
             type="button"
             onClick={() => setIsDatePickerOpen(true)}
-            className="bg-color2 text-white text-sm py-2 px-4 rounded hover:bg-color7"
+            className="bg-cyan-500 text-white text-sm py-2 px-4 rounded hover:bg-color7"
           >
             날짜 선택
           </button>
@@ -121,7 +121,7 @@ export default function CreateProjectForm() {
                 <button
                   type="button"
                   onClick={() => setIsDatePickerOpen(false)}
-                  className="bg-color2 text-black px-4 py-2 rounded hover:bg-color7 hover:text-white"
+                  className="bg-cyan-500 text-black px-4 py-2 rounded hover:bg-color7 hover:text-white"
                 >
                   닫기
                 </button>

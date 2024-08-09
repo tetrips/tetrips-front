@@ -73,14 +73,14 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
 
   return (
     <div className="h-full flex">
-      <div className="w-1/4 border-r">
+      <div className="w-1/5 border-r">
         <ItineraryTabs 
           itineraries={itineraries} 
           activeDay={activeDay} 
           setActiveDay={setActiveDay} 
         />
       </div>
-      <div className="w-3/4 flex flex-col">
+      <div className="w-4/5 flex flex-col">
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <ItineraryDayView 
             itinerary={currentItinerary} 
