@@ -1,10 +1,10 @@
 'use client'
 
-import { tokenRefresh } from '../../../services/tokenRefresh'
+import { getAccessToken } from '../../../services/getAccessToken'
 
 export default function Page() {
   const onHi = async () => {
-    await tokenRefresh()
+    await getAccessToken()
   }
 
   return (
