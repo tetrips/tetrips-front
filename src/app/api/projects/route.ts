@@ -18,10 +18,10 @@ export async function POST(request: NextRequest) {
     const endDate = convertToKoreanDate(new Date(data.endDate));
     const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
-    const creator = 'user1@naver.com';
     const usernameData = cookies().get('username');
     
     const username = JSON.stringify(usernameData);
+    const extractedNickname = username.split('@')[0];
     const itineraries: Itinerary[] = [];
 
     let currentDate = new Date(startDateUTC);
@@ -37,14 +37,14 @@ export async function POST(request: NextRequest) {
       currentDate.setDate(currentDate.getDate() + 1);
     }
     const guests: Guest[] = [{
-      email: creator,
-      nickname: 'User1' || '',
+      email: username,
+      nickname: extractedNickname,
       img: 'user1.jpg' || ''
     }];
     const newProject: Project = {
       _id: new ObjectId(),
       title: data.title,
-      creator: creator,
+      creator: username,
       startDate: startDateUTC,
       endDate: endDateUTC,
       createdAt: createdAt,

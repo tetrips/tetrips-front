@@ -10,18 +10,27 @@ interface Message {
   message: string;
   userId: string;
   prId: string;
-  timestamp: string;
+  chatTime: Date;
 }
+interface ClientMessage{
+  nickname: string;
+  message: string;
+  userId: string;
+  prId: string;
+  timestamp?: Date;
+}
+
 
 export default function ChatBox({ project, userData }: { project: ClientProject, userData: Guest }) {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ClientMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const projectId = project.id;
   const guests = project.guests;
   const userId = userData.email;
+  const chatUserId = userId.replace('@', '-');
   const nickname = userData.nickname;
 
 
@@ -39,7 +48,18 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
         throw new Error('메시지를 불러오지 못했습니다.');
       }
       const data: Message[] = await response.json();
-      setMessages(data);
+      console.log('fetch mesaages data',data);
+      const clientData = data.map((msg) => { 
+        const originalUserId = msg.userId.replace('-', '@');
+        return {
+          nickname: msg.nickname,
+          message: msg.message,
+          userId: originalUserId,
+          prId: msg.prId,
+          timestamp: msg.chatTime,
+        }
+      });
+      setMessages(clientData);
     } catch (error) {
       setError('메시지를 불러오는 중 오류가 발생했습니다.');
       console.error('Error fetching messages:', error);
@@ -58,9 +78,9 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     if (input.trim()) {
       setIsLoading(true);
       const newMessage = {
-        nickname,
+        nickname:nickname,
         message: input.trim(),
-        userId,
+        userId:chatUserId,
         prId: projectId,
       };
 
@@ -90,8 +110,6 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   useEffect(() => {
     fetchMessages();
-    const intervalId = setInterval(fetchMessages, 5000);
-    return () => clearInterval(intervalId);
   }, [fetchMessages]);
 
   useEffect(() => {
@@ -107,7 +125,7 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
   }, [guests]);
 
   const messagesList = messages.map((msgObj, index) => {
-    const messageTime = new Date(msgObj.timestamp).toLocaleString();
+    const messageTime = msgObj.timestamp ? new Date(msgObj.timestamp).toLocaleString() : '';
     const userColor = getUserColor(msgObj.userId);
 
     return (

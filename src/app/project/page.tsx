@@ -7,10 +7,9 @@ import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 
 export default async function Page() {
-  const userEmail = "user1@naver.com";
-  const username = cookies().get('username');
+  const usernameData = cookies().get('username');
 
-  const projects = await fetchProjectsByUserId(userEmail)
+  const projects = await fetchProjectsByUserId(JSON.stringify(usernameData));
 
   if (!projects || projects.length === 0) {
     return (
