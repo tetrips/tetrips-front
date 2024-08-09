@@ -15,14 +15,14 @@ export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [checked, setChecked] = useState(0) //
   // 체크 확인에 대한 로직 수정해야 함 이메일만 두번 체크해도 가입 요청이 가능
-  const router = useRouter()
-
-  useEffect(() => {
-    const username = Cookies.get('username')
-    if (username) {
-      router.push('/')
-    }
-  }, [router])
+  // const router = useRouter()
+  //
+  // useEffect(() => {
+  //   const username = Cookies.get('username')
+  //   if (username) {
+  //     router.push('/')
+  //   }
+  // }, [router])
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsSubmitting(true)
