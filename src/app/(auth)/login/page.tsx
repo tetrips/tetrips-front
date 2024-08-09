@@ -1,17 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { AuthLayout } from '@/components/auth/AuthLayout'
 import { Button } from '@/components/auth/Button'
 import { TextField } from '@/components/auth/Fields'
+import Cookies from 'js-cookie'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isError, setIsError] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const username = Cookies.get('username')
+    if (username) {
+      router.push('/')
+    }
+  }, [router])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
