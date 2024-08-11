@@ -9,12 +9,15 @@ import { redirect } from 'next/navigation'
 
 
 export default async function Page() {
-  const usernameData = cookies().get('username');
-  if (!usernameData) {
-    redirect('/login');
-  }
+  // const usernameData = cookies().get('username');
+  // if (!usernameData) {
+  //   redirect('/login');
+  // }
+  // const username = usernameData.value;
+  const test = 'test1@naver.com';
+  
 
-  const projects = await fetchProjectsByUserId(usernameData.value);
+  const projects = await fetchProjectsByUserId(test);
 
   if (!projects || projects.length === 0) {
     return (

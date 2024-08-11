@@ -105,41 +105,41 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     }
   }, [input, nickname, chatUserId, projectId]);
 
-  useEffect(() => {
-    fetchMessages();
+  // useEffect(() => {
+  //   fetchMessages();
 
-    const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_SOCKET_URL}/chat`);
-    const stompClient = Stomp.over(socket);
+  //   const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_SOCKET_URL}/chat`);
+  //   const stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, () => {
-      stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
+  //   stompClient.connect({}, () => {
+  //     stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
 
-        const newMessage: Message = JSON.parse(message.body);
-        console.log('Received new message:', newMessage);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            nickname: newMessage.nickname,
-            message: newMessage.message,
-            userId: newMessage.userId.replace('-', '@'),
-            prId: newMessage.prId,
-            timestamp: new Date(newMessage.chatTime),
-          },
-        ]);
-      });
-    }, (error: any) => {
-      console.error('WebSocket error:', error);
-      setError('WebSocket 오류가 발생했습니다.');
-    });
+  //       const newMessage: Message = JSON.parse(message.body);
+  //       console.log('Received new message:', newMessage);
+  //       setMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         {
+  //           nickname: newMessage.nickname,
+  //           message: newMessage.message,
+  //           userId: newMessage.userId.replace('-', '@'),
+  //           prId: newMessage.prId,
+  //           timestamp: new Date(newMessage.chatTime),
+  //         },
+  //       ]);
+  //     });
+  //   }, (error: any) => {
+  //     console.error('WebSocket error:', error);
+  //     setError('WebSocket 오류가 발생했습니다.');
+  //   });
 
-    stompClientRef.current = stompClient;
+  //   stompClientRef.current = stompClient;
 
-    return () => {
-      if (stompClientRef.current) {
-        stompClientRef.current.disconnect();
-      }
-    };
-  }, [projectId]);
+  //   return () => {
+  //     if (stompClientRef.current) {
+  //       stompClientRef.current.disconnect();
+  //     }
+  //   };
+  // }, [projectId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -204,10 +204,10 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
             {messagesList}
           </div>
         </div>
-        <div className="flex-none bg-white py-3 pr-2">
+        <div className="flex-none bg-white py-1 pr-2">
           <div className="flex items-center space-x-2">
             <input
-              className="flex-1 py-2 px-1 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="flex-1 py-1 px-1 border rounded-lg focus:outline-none text-sm"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}

@@ -29,13 +29,13 @@ export default function PlaceModal({ onClose, purpose, onPlaceSelect, initialPla
         </h2>
         <div className="mb-2">
           <button
-            className={`mr-2 px-4 py-2 rounded text-sm ${activeTab === 'recommended' ? 'bg-cyan-500 text-white' : 'bg-gray-100'}`}
+            className={`mr-2 px-4 py-2 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors duration-200 items-center shadow-sm ${activeTab === 'recommended' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-500'}`}
             onClick={() => setActiveTab('recommended')}
           >
             추천 장소
           </button>
           <button
-            className={`px-4 py-2 rounded text-sm ${activeTab === 'search' ? 'bg-cyan-500 text-white' : 'bg-gray-100'}`}
+            className={`px-4 py-2 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors duration-200 items-center shadow-sm ${activeTab === 'search' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-500'}`}
             onClick={() => setActiveTab('search')}
           >
             네이버 지도 검색

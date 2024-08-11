@@ -33,29 +33,29 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
   
   return (
     <header className="bg-white border-b py-1 px-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-start items-center">
         <Link href="/project">
           <ArrowUturnLeftIcon className="h-6 w-6 text-gray-500 cursor-pointer"/>
         </Link>
-        <h1 className={`${noto.className} items-start justify-start max-w-[50%]`}>{project.title}</h1>
-        <div className="flex items-center space-x-6">
+        <h1 className={`${noto.className} sm:text-sm text-xs truncate max-w-[50%] ml-4`}>{project.title}</h1>
+        <div className="flex items-center space-x-6 ml-auto">
           {guests.map((user, index) => (
             <div
               key={index}
-              className={`flex flex-col items-center justify-center w-10 h-10 rounded-full text-white ${colors[index % colors.length]}`}
+              className={`flex flex-col items-center justify-center w-9 h-9 rounded-full text-white ${colors[index % colors.length]}`}
             >
               {user.nickname?.[0]}
             </div>
           ))}
           <button
             onClick={handleInvite}
-            className="bg-color8 mx-1 text-white text-sm px-5 py-2 rounded"
+            className="bg-color8 mx-1 text-white text-xs sm:text-xs px-5 py-2 rounded"
           >
             초대
           </button>
           <button
             onClick={handleComplete}
-            className="bg-cyan-500 text-white text-sm px-5 py-2 rounded"
+            className="bg-cyan-500 text-white text-xs sm:text-xs px-5 py-2 rounded"
           >
             {isSaving ? '저장 중...' : '저장'}
           </button>
