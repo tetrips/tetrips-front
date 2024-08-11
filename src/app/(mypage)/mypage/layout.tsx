@@ -1,4 +1,3 @@
-import '@/styles/globals.css'
 import Header from '@/components/common/Header'
 import { userCheck } from '@/utils/userCheck'
 

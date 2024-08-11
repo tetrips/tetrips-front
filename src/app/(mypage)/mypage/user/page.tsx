@@ -54,6 +54,7 @@ export default function Page() {
   }
 
   const handleEditClick = (field: string) => {
+    // @ts-ignore
     setEditMode((prevMode) => ({ ...prevMode, [field]: !prevMode[field] }))
   }
 
