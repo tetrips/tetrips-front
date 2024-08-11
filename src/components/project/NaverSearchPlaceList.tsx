@@ -17,7 +17,6 @@ interface SearchResult {
     mapy: string;
     category: string;
     link: string;
-    description: string;
   }[];
   errorMessage?: string;
 }
@@ -84,7 +83,6 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
       const data = await response.json();
       console.log('Place added successfully:', data);
     } catch (err) {
-      setError('이미 데이터베이스에 존재하는 장소입니다.');
       console.error('Add place error:', err);
     }
     onPlaceSelect(destination);
@@ -99,11 +97,11 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="장소 검색"
-            className="text-sm flex-grow border rounded-l px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm flex-grow border border-gray-300 rounded-l px-4 py-2"
           />
           <button
             type="submit"
-            className="bg-color2 text-white text-sm px-4 py-2 rounded-r hover:bg-color7"
+            className="bg-cyan-500 text-white text-sm px-4 py-2 rounded-r hover:bg-color7"
             disabled={isLoading}
           >
             {isLoading ? '검색 중...' : '검색'}
@@ -128,7 +126,7 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
               </a>
             </div>
             <button
-              className="bg-color2 text-white p-2 rounded hover:bg-color7"
+              className="bg-cyan-500 text-white p-2 rounded hover:bg-color7"
               onClick={() => handleAddPlace(result)}
             >
               <PlusIcon className='w-5' />

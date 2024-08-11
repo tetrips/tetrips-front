@@ -25,7 +25,7 @@ export interface ClientProject {
 export interface Guest {
   email: string;
   nickname: string;
-  img?: string;
+  img: string;
 }
 
 export interface Itinerary {
@@ -47,6 +47,7 @@ export interface Destination {
   mapy: number;
   link?: string;
   stayDuration: number;
+  description?: string;
   startTime?: string;
   endTime?: string;
 }

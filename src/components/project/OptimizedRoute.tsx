@@ -38,7 +38,7 @@ export default function  OptimizedRoute  ({ route,isOpen }: OptimizedRouteProps)
                   </div>
                   <p className="text-sm text-gray-500 mt-1">{destination.roadAddress}</p>
                   {destination.stayDuration > 0 && (
-                    <p className="text-sm text-blue-600 mt-1">체류 시간: {destination.stayDuration}분</p>
+                    <p className="text-sm mt-1">체류 시간: {destination.stayDuration}분</p>
                   )}
                 </li>
               ))}

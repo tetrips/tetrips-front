@@ -18,10 +18,14 @@ export async function POST(request: NextRequest) {
     const endDate = convertToKoreanDate(new Date(data.endDate));
     const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
     const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
-    const creator = 'testUser@naver.com';
-    const usernameData = cookies().get('username');
-    
-    const username = JSON.stringify(usernameData);
+    // const usernameData = cookies().get('username');
+    // if (!usernameData) {
+    //   return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
+    // }
+    // const username = usernameData.value;
+    // const extractedNickname = username.split('@')[0];
+    const test = 'test1@naver.com';
+    const extractedtest = test.split('@')[0];
     const itineraries: Itinerary[] = [];
 
     let currentDate = new Date(startDateUTC);
@@ -37,14 +41,14 @@ export async function POST(request: NextRequest) {
       currentDate.setDate(currentDate.getDate() + 1);
     }
     const guests: Guest[] = [{
-      email: creator,
-      nickname: 'testNickname' || '',
-      img: 'testImg' || ''
+      email: test,
+      nickname: extractedtest,
+      img: 'user1.jpg' || ''
     }];
     const newProject: Project = {
       _id: new ObjectId(),
       title: data.title,
-      creator: creator,
+      creator: test,
       startDate: startDateUTC,
       endDate: endDateUTC,
       createdAt: createdAt,

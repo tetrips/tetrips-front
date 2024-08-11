@@ -5,12 +5,19 @@ import { fetchProjectsByUserId } from '@/services/projectService'
 import { cookies } from 'next/headers'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
+import { redirect } from 'next/navigation'
+
 
 export default async function Page() {
-  const userEmail = 'testUser@naver.com'
-  const username = cookies().get('username')
+  // const usernameData = cookies().get('username');
+  // if (!usernameData) {
+  //   redirect('/login');
+  // }
+  // const username = usernameData.value;
+  const test = 'test1@naver.com';
+  
 
-  const projects = await fetchProjectsByUserId(userEmail)
+  const projects = await fetchProjectsByUserId(test);
 
   if (!projects || projects.length === 0) {
     return (

@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { Destination, Itinerary } from '@/types/Project';
 import { OptimizedRouteButton } from './OptimizedRouteButton';
 import OptimizedRoute from './OptimizedRoute';
+import { PlusIcon, ArrowPathIcon, ClockIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
 interface ItineraryDayViewProps {
   itinerary: Itinerary;
@@ -27,6 +28,7 @@ interface ItineraryDayViewProps {
   removeDestination: (destinationId: string) => void;
   reorderDestinations: (newOrder: string[]) => void;
   updateDestinationDuration: (destinationId: string, duration: number) => void;
+  updateDestinationDescription: (destinationId: string, description: string) => void;
 }
 
 export default function ItineraryDayView({
@@ -36,6 +38,7 @@ export default function ItineraryDayView({
   removeDestination,
   reorderDestinations,
   updateDestinationDuration,
+  updateDestinationDescription,
 }: ItineraryDayViewProps) {
 
   const sensors = useSensors(
@@ -104,62 +107,56 @@ export default function ItineraryDayView({
       alert('동선이 최적화되었습니다.');
     } catch (error) {
       console.error('Route optimization error:', error);
-      alert('동선 최적화 중 오류가 발생했습니다.');
+      alert('시작지점과 종료지점을 모두 입력해주세요.');
     }
   };
+
   const LocationBox = ({ type, place }: { type: 'start' | 'end', place: Destination | undefined }) => (
     <div 
       onClick={() => onOpenModal(type)}
-      className={`w-full h-16 border-2 ${place ? 'border-solid' : 'border-dashed'} border-gray-300 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 cursor-pointer`}
+      className={`w-full p-3 bg-white border-l-4 ${type === 'start' ? 'border-l-cyan-400' : 'border-l-pink-400'} rounded-md flex items-center justify-between text-gray-700 hover:bg-gray-50 cursor-pointer transition-all duration-200 group shadow-sm`}
     >
-      {place ? (
-        <div className="text-center">
-          <p className="font-semibold">{place.title}</p>
-        </div>
-      ) : (
-        <p>{type === 'start' ? '시작지점 추가' : '종료지점 추가'}</p>
-      )}
+      <div className="flex items-center space-x-3">
+        <MapPinIcon className={`h-5 w-5 ${type === 'start' ? 'text-cyan-500' : 'text-pink-500'}`} />
+        <p className='font-medium text-sm'>{place ? place.title : `${type === 'start' ? '출발' : '도착'}지점 선택`}</p>
+      </div>
+      {!place && <PlusIcon className="h-5 w-5 text-gray-400 group-hover:text-cyan-500 transition-colors duration-200" />}
     </div>
   );
 
   return (
-    <div className="flex flex-col h-full p-4 overflow-x-hidden">
-      <div className="flex justify-between items-center mb-4">
-        <p>{itinerary.date}</p>
+    <div className="flex flex-col h-full bg-white overflow-hidden border border-gray-200">
+      <div className="px-4 py-3 flex justify-between items-center border-b border-gray-100">
+        <div className="flex items-center space-x-2">
+          <CalendarIcon className="h-4 w-4 text-gray-400" />
+          <p className='text-sm font-medium text-gray-700'>{itinerary.date}</p>
+        </div>
         <input
           type="time"
           value={itinerary.dayStartTime} 
           onChange={handleDayStartTimeChange}
-          className="border rounded p-1"
+          className="text-xs text-gray-700 focus:outline-none w-24 focus:ring-0"
         />
       </div>
 
-      <div className="flex-grow flex flex-col space-y-4 overflow-x-hidden">
-        <div>
-          <LocationBox type="start" place={itinerary.startPlace} />
-        </div>
-
-        <div className="flex-grow overflow-y-auto no-scrollbar">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm">여행지 리스트</h3>
-            <div>
-              {/* {optimizedRoute.length > 0 &&
-                  <OptimizedRouteButton
-                  onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
-                  isOpen={isOptimizedRouteOpen}
-                />
-                } */}
+      <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto">
+        <LocationBox type="start" place={itinerary.startPlace} />
+        
+        <div className="flex-grow">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">여행 일정</h3>
+            <div className="flex space-x-2">
               <button
                 onClick={() => onOpenModal('add')}
-                className="bg-color2 text-white px-4 py-1 rounded mr-2"
+                className="bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors duration-200 flex items-center"
               >
-                추가
+                <PlusIcon className="h-3 w-3 mr-1" /> 장소 추가
               </button>
               <button
                 onClick={handleOptimizeRoute}
-                className="bg-color2 text-white px-4 py-1 rounded"
+                className="bg-white text-cyan-500 border border-cyan-500 px-3 py-1 rounded-full text-xs font-medium hover:bg-cyan-50 transition-colors duration-200 flex items-center"
               >
-                최적화
+                <ArrowPathIcon className="h-3 w-3 mr-1" /> 최적 경로
               </button>
             </div>
           </div>
@@ -172,13 +169,14 @@ export default function ItineraryDayView({
               items={itinerary.destinations?.map(d => d.id) || []}
               strategy={verticalListSortingStrategy}
             >
-              <div className="space-y-2 overflow-x-hidden">
+              <div className="space-y-2">
                 {itinerary.destinations?.map((destination) => (
                   <SortableItem
                     key={destination.id} 
                     id={destination.id}
                     destination={destination}
                     updateDestinationDuration={updateDestinationDuration}
+                    updateDestinationDescription={updateDestinationDescription}
                     removeDestination={() => removeDestination(destination.id)}
                   />
                 ))}
@@ -186,12 +184,8 @@ export default function ItineraryDayView({
             </SortableContext>
           </DndContext>
         </div>
-        <div>
-          <LocationBox type="end" place={itinerary.endPlace} />
-        </div>
-        {/* <OptimizedRoute isOpen={isOptimizedRouteOpen} route={optimizedRoute}/> */}
+        <LocationBox type="end" place={itinerary.endPlace} />
       </div>
     </div>
-
   );
 }

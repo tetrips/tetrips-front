@@ -35,9 +35,10 @@ const secondaryNavigation = [
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+type EditModeKey = 'nickname' | 'email' | 'birthdate';
 
 export default function Page() {
-  const [editMode, setEditMode] = useState({
+  const [editMode, setEditMode] = useState<Record<EditModeKey, boolean>>({
     nickname: false,
     email: false,
     birthdate: false,
@@ -53,11 +54,12 @@ export default function Page() {
     setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  const handleEditClick = (field: string) => {
+
+  const handleEditClick = (field: EditModeKey) => {
     setEditMode((prevMode) => ({ ...prevMode, [field]: !prevMode[field] }))
   }
 
-  const handleSaveClick = (field: string) => {
+  const handleSaveClick = (field: EditModeKey) => {
     // Save changes logic here
     setEditMode((prevMode) => ({ ...prevMode, [field]: false }))
   }
@@ -184,7 +186,7 @@ export default function Page() {
                   </dd>
                 </div>
               </dl>
-              <div className="flex justify-end">
+              <div className="flex justify-center">
                 <button
                   type="button"
                   className="mt-10 rounded-md bg-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

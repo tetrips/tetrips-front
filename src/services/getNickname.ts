@@ -1,6 +1,6 @@
 import { getAccessToken } from '@/services/getAccessToken'
 
-export const getUserInfo = async () => {
+export const getNickname = async () => {
   const token = await getAccessToken()
   if (!token) {
     console.log(token)
@@ -9,14 +9,13 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/getUserInfo`,
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/getNickname`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
         },
-        cache: 'no-cache',
       },
     )
     if (res.status === 200) {
