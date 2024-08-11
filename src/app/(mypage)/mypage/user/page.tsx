@@ -35,9 +35,10 @@ const secondaryNavigation = [
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+type EditModeKey = 'nickname' | 'email' | 'birthdate';
 
 export default function Page() {
-  const [editMode, setEditMode] = useState({
+  const [editMode, setEditMode] = useState<Record<EditModeKey, boolean>>({
     nickname: false,
     email: false,
     birthdate: false,
@@ -53,12 +54,12 @@ export default function Page() {
     setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  const handleEditClick = (field: string) => {
-    // @ts-ignore
+
+  const handleEditClick = (field: EditModeKey) => {
     setEditMode((prevMode) => ({ ...prevMode, [field]: !prevMode[field] }))
   }
 
-  const handleSaveClick = (field: string) => {
+  const handleSaveClick = (field: EditModeKey) => {
     // Save changes logic here
     setEditMode((prevMode) => ({ ...prevMode, [field]: false }))
   }
