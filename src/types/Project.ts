@@ -47,6 +47,7 @@ export interface Destination {
   mapy: number;
   link?: string;
   stayDuration: number;
+  description?: string;
   startTime?: string;
   endTime?: string;
 }

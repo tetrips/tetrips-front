@@ -36,12 +36,12 @@ export default function PlaceList({ places, onPlaceSelect }: PlaceListProps) {
               className="px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
               onClick={() => onPlaceSelect(place)}
             >
-              <h3 className="font-semibold">{place.title}</h3>
+              <h3 className="font-semibold text-sm">{place.title}</h3>
               <p className="text-xs pt-1 text-gray-600">{place.roadAddress}</p>
               <div className="text-xs text-gray-500">
                 {place.category && <span className="mr-2">{place.category}</span>}
                 {place.link && (
-                  <a href={place.link} target="_blank" rel="noopener noreferrer" className="text-blue-800 hover:underline">
+                  <a href={place.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                     상세 정보
                   </a>
                 )}
@@ -51,7 +51,6 @@ export default function PlaceList({ places, onPlaceSelect }: PlaceListProps) {
         </ul>
       )}
     </div>
-
   );
 }
 
