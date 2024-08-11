@@ -22,6 +22,7 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
     removeDestination, 
     reorderDestinations,
     updateDestinationDuration,
+    updateDestinationDescription,
     setStartPlace,
     setEndPlace,
   } = useYjs({project});
@@ -73,14 +74,14 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
 
   return (
     <div className="h-full flex">
-      <div className="w-1/5 border-r">
+      <div className="w-1/6 border-r">
         <ItineraryTabs 
           itineraries={itineraries} 
           activeDay={activeDay} 
           setActiveDay={setActiveDay} 
         />
       </div>
-      <div className="w-4/5 flex flex-col">
+      <div className="w-5/6 flex flex-col">
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <ItineraryDayView 
             itinerary={currentItinerary} 
@@ -88,7 +89,8 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
             onItineraryChange={(newDayStartTime) => updateDayStartTime(currentItinerary.itineraryId, newDayStartTime)}
             removeDestination={(destinationId) => removeDestination(currentItinerary.itineraryId, destinationId)}
             reorderDestinations={(newOrder) => reorderDestinations(currentItinerary.itineraryId, newOrder)}
-            updateDestinationDuration={(destinationId, duration) => updateDestinationDuration(currentItinerary.itineraryId, destinationId, duration)}
+            updateDestinationDuration={(destinationId, duration) => updateDestinationDuration(destinationId, duration)}
+            updateDestinationDescription={(destinationId, description) => updateDestinationDescription(destinationId, description)}
           />
         </div>
       </div>
