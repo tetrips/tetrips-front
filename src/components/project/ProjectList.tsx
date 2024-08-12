@@ -3,6 +3,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { CreateProject, DeleteProject, UpdateProject } from './ProjectButton';
+import Link from 'next/link';
+import ItineraryModalButton from './ItineraryModalButton';
 
 // const statuses: { Complete: string; 'In progress': string; Archived: string } = {
 //   Complete: 'text-green-700 bg-green-50 ring-green-600/20',
@@ -40,8 +42,9 @@ export default function ProjectList({projects}:{projects:ClientProject[]}) {
             </div>
           </div>
           <div className="flex flex-none items-center gap-x-4">
+            <ItineraryModalButton project={project}/>
             <a
-              href={project.id}
+              href={`/project/${project.id}/image`}
               className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
             >
               View project<span className="sr-only">, {project.title}</span>

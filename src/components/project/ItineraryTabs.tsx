@@ -21,8 +21,8 @@ export default function ItineraryTabs({ itineraries, activeDay, setActiveDay }: 
           }`}
           onClick={() => setActiveDay(index)}
         >
-          <div className="font-semibold">Day {index + 1}</div>
-          <div className="text-sm">{itinerary.date}</div>
+          <div className="font-semibold text-xs sm:text-sm truncate">Day {index + 1}</div>
+          <div className="text-xs sm:text-xs truncate">{itinerary.date}</div>
         </button>
       ))}
     </div>
