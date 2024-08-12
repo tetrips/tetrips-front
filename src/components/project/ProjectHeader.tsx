@@ -4,6 +4,8 @@ import { useYjs } from "@/hooks/useYjs";
 import { ClientProject, Guest } from "@/types/Project";
 import { noto } from "../common/fonts";
 import { useEffect, useState } from "react";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default function ProjectHeader({project}:{project:ClientProject}) {
   const {updateProject,isSaving } = useYjs({project});
@@ -32,7 +34,10 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
   return (
     <header className="bg-white border-b py-1 px-4">
       <div className="flex justify-between items-center">
-        <h1 className={`${noto.className} text-lg truncate max-w-[50%]`}>{project.title}</h1>
+        <Link href="/project">
+          <ArrowUturnLeftIcon className="h-6 w-6 text-gray-500 cursor-pointer"/>
+        </Link>
+        <h1 className={`${noto.className} items-start justify-start max-w-[50%]`}>{project.title}</h1>
         <div className="flex items-center space-x-6">
           {guests.map((user, index) => (
             <div

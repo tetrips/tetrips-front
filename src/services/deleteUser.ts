@@ -1,7 +1,9 @@
 import { getAccessToken } from '@/services/getAccessToken'
 import Cookies from 'js-cookie'
+import { deleteUserCookie } from '@/app/(auth)/logout/actions'
+import postLogout from '@/services/postLogout'
 
-export const getUserInfo = async () => {
+export const deleteUser = async () => {
   const token = await getAccessToken()
   const email = Cookies.get('username')
   if (!token) {
@@ -11,9 +13,9 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/getUserInfo?email=${email}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/user/deleteUser?email=${email}`,
       {
-        method: 'GET',
+        method: 'DELETE',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
@@ -24,6 +26,9 @@ export const getUserInfo = async () => {
     if (res.status === 200) {
       const data = await res.json()
       console.log(data)
+      await deleteUserCookie()
+      await postLogout()
+      window.location.reload()
       return data
     } else {
       console.log('status가 200이 아닙니다.')
