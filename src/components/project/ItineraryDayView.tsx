@@ -135,17 +135,23 @@ export default function ItineraryDayView({
           type="time"
           value={itinerary.dayStartTime} 
           onChange={handleDayStartTimeChange}
-          className="text-xs text-gray-700 focus:outline-none w-24 focus:ring-0"
+          className="text-xs text-gray-700 focus:outline-none w-32 focus:ring-0"
         />
       </div>
 
-      <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto">
+      <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto no-scrollbar">
         <LocationBox type="start" place={itinerary.startPlace} />
         
         <div className="flex-grow">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-gray-700">여행 일정</h3>
             <div className="flex space-x-2">
+              {optimizedRoute.length > 0 &&
+                <OptimizedRouteButton
+                  onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
+                  isOpen={isOptimizedRouteOpen}
+                />
+                }
               <button
                 onClick={() => onOpenModal('add')}
                 className="bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors duration-200 flex items-center"
@@ -186,6 +192,9 @@ export default function ItineraryDayView({
         </div>
         <LocationBox type="end" place={itinerary.endPlace} />
       </div>
+      {isOptimizedRouteOpen&&
+      <OptimizedRoute isOpen={isOptimizedRouteOpen} route={optimizedRoute} onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)} 
+      />}
     </div>
   );
 }

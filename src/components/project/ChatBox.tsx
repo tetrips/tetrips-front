@@ -105,41 +105,41 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     }
   }, [input, nickname, chatUserId, projectId]);
 
-  // useEffect(() => {
-  //   fetchMessages();
+  useEffect(() => {
+    fetchMessages();
 
-  //   const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_SOCKET_URL}/chat`);
-  //   const stompClient = Stomp.over(socket);
+    const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_SOCKET_URL}/chat`);
+    const stompClient = Stomp.over(socket);
 
-  //   stompClient.connect({}, () => {
-  //     stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
+    stompClient.connect({}, () => {
+      stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
 
-  //       const newMessage: Message = JSON.parse(message.body);
-  //       console.log('Received new message:', newMessage);
-  //       setMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         {
-  //           nickname: newMessage.nickname,
-  //           message: newMessage.message,
-  //           userId: newMessage.userId.replace('-', '@'),
-  //           prId: newMessage.prId,
-  //           timestamp: new Date(newMessage.chatTime),
-  //         },
-  //       ]);
-  //     });
-  //   }, (error: any) => {
-  //     console.error('WebSocket error:', error);
-  //     setError('WebSocket 오류가 발생했습니다.');
-  //   });
+        const newMessage: Message = JSON.parse(message.body);
+        console.log('Received new message:', newMessage);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            nickname: newMessage.nickname,
+            message: newMessage.message,
+            userId: newMessage.userId.replace('-', '@'),
+            prId: newMessage.prId,
+            timestamp: new Date(newMessage.chatTime),
+          },
+        ]);
+      });
+    }, (error: any) => {
+      console.error('WebSocket error:', error);
+      setError('WebSocket 오류가 발생했습니다.');
+    });
 
-  //   stompClientRef.current = stompClient;
+    stompClientRef.current = stompClient;
 
-  //   return () => {
-  //     if (stompClientRef.current) {
-  //       stompClientRef.current.disconnect();
-  //     }
-  //   };
-  // }, [projectId]);
+    return () => {
+      if (stompClientRef.current) {
+        stompClientRef.current.disconnect();
+      }
+    };
+  }, [projectId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
