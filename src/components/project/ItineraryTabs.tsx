@@ -1,5 +1,4 @@
 'use client'
-
 import { Itinerary } from "@/types/Project";
 
 interface ItineraryTabsProps {

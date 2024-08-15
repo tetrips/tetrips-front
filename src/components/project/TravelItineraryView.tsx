@@ -1,6 +1,7 @@
 'use client'
 import { ClockIcon, CalendarIcon, UserGroupIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { toJpeg, toPng } from 'html-to-image';
 
 interface ClientProject {
   id: string;
@@ -42,7 +43,6 @@ interface Destination {
   endTime?: string;
 }
 
-
 interface DestinationCardProps {
   destination: Destination;
   description?: string;
@@ -50,12 +50,42 @@ interface DestinationCardProps {
   isEnd?: boolean;
 }
 
+
 export default function TravelItineraryView({ project }: { project: ClientProject }) {
   const [activeTab, setActiveTab] = useState(-1);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const saveAsImage = async (format: 'png' | 'jpg') => {
+    if (contentRef.current) {
+      try {
+        let image;
+        const scale = 2; // Increase scale for higher quality
+        const options = {
+          quality: 0.95,
+          pixelRatio: window.devicePixelRatio * scale,
+          cacheBust: true,
+        };
+
+        if (format === 'png') {
+          image = await toPng(contentRef.current, options);
+        } else {
+          image = await toJpeg(contentRef.current, options);
+        }
+
+        const link = document.createElement('a');
+        link.download = `${project.title}.${format}`;
+        link.href = image;
+        link.click();
+      } catch (error) {
+        console.error('Failed to save image:', error);
+        alert('이미지 저장에 실패했습니다.');
+      }
+    }
+  };
 
   return (
     <div className="bg-gray-50 p-4">
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+      <div className="bg-white shadow-sm rounded-lg overflow-hidden" ref={contentRef}>
         <div className="border-b border-gray-200 px-4 py-4">
           <h1 className="text-xl font-semibold text-gray-800">{project.title}</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -90,6 +120,20 @@ export default function TravelItineraryView({ project }: { project: ClientProjec
             <DayView day={project.itineraries[activeTab]} />
           )}
         </div>
+      </div>
+      <div className="mt-4 text-center space-x-4">
+        <button
+          onClick={() => saveAsImage('png')}
+          className="bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-colors duration-200"
+        >
+          PNG로 저장
+        </button>
+        <button
+          onClick={() => saveAsImage('jpg')}
+          className="bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-colors duration-200"
+        >
+          JPG로 저장
+        </button>
       </div>
     </div>
   );

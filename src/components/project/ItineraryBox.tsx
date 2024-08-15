@@ -16,7 +16,7 @@ interface ItineraryProps {
 
 export default function ItineraryBox({ project, initialPlaces }: ItineraryProps) {
   const {
-    itineraries, 
+    itineraries,
     updateDayStartTime, 
     addDestination, 
     removeDestination, 
@@ -25,6 +25,8 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
     updateDestinationDescription,
     setStartPlace,
     setEndPlace,
+    optimizedRoutes,
+    setOptimizedRoute
   } = useYjs({project});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,6 +93,9 @@ export default function ItineraryBox({ project, initialPlaces }: ItineraryProps)
             reorderDestinations={(newOrder) => reorderDestinations(currentItinerary.itineraryId, newOrder)}
             updateDestinationDuration={(destinationId, duration) => updateDestinationDuration(destinationId, duration)}
             updateDestinationDescription={(destinationId, description) => updateDestinationDescription(destinationId, description)}
+            optimizedRoute={optimizedRoutes[currentItinerary.itineraryId]}
+            setOptimizedRoute={(route) => setOptimizedRoute(currentItinerary.itineraryId, route)}
+
           />
         </div>
       </div>

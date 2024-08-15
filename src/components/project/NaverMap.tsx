@@ -2,12 +2,20 @@
 
 import { useYjs } from "@/hooks/useYjs";
 import { ClientProject } from "@/types/Project";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+
+const colors = ['#06B6D4', '#79785C', '#D76955', '#849E8A', '#A9AC5D', '#D3B8C5', '#8689AC', '#036280', '#ECA4A4', '#378BA4', '#81BECE', '#469597', '#587099', '#A5C4BD', '#EBC678', '#FDB10B'];
 
 export default function NaverMap({project}: {project: ClientProject}) {
   const { markers } = useYjs({project});
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerInstancesRef = useRef<{ [key: string]: naver.maps.Marker }>({});
+
+  const dateColorMap = useMemo(() => {
+    const uniqueDates = Array.from(new Set(markers.map(m => m.date)));
+    return Object.fromEntries(uniqueDates.map((date, index) => [date, colors[index % colors.length]]));
+  }, [markers]);
+  
 
   useEffect(() => {
     const mapOptions: naver.maps.MapOptions = {
@@ -48,10 +56,10 @@ export default function NaverMap({project}: {project: ClientProject}) {
       if (!marker) {
         const markerIcon = {
           content: `
-            <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 0C7.164 0 0 7.164 0 16C0 24.836 16 40 16 40C16 40 32 24.836 32 16C32 7.164 24.836 0 16 0Z" fill="#06B6D4"/>
-              <text x="16" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">${index + 1}</text>
-            </svg>
+          <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 0C7.164 0 0 7.164 0 16C0 24.836 16 40 16 40C16 40 32 24.836 32 16C32 7.164 24.836 0 16 0Z" fill="${dateColorMap[markerData.date]}"/>
+            <text x="16" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">${markerData.dayIndex}</text>
+          </svg>
           `,
           size: new naver.maps.Size(32, 40),
           anchor: new naver.maps.Point(16, 40),
@@ -93,10 +101,10 @@ export default function NaverMap({project}: {project: ClientProject}) {
         marker.setPosition(latlng);
         marker.setIcon({
           content: `
-            <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 0C7.164 0 0 7.164 0 16C0 24.836 16 40 16 40C16 40 32 24.836 32 16C32 7.164 24.836 0 16 0Z" fill="#06B6D4"/>
-              <text x="16" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">${index + 1}</text>
-            </svg>
+          <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 0C7.164 0 0 7.164 0 16C0 24.836 16 40 16 40C16 40 32 24.836 32 16C32 7.164 24.836 0 16 0Z" fill="${dateColorMap[markerData.date]}"/>
+            <text x="16" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">${markerData.dayIndex}</text>
+          </svg>
           `,
           size: new naver.maps.Size(32, 40),
           anchor: new naver.maps.Point(16, 40),
@@ -113,7 +121,7 @@ export default function NaverMap({project}: {project: ClientProject}) {
       }
       map.fitBounds(bounds);
     }
-  }, [markers]);
+  }, [markers, dateColorMap]);
 
   return (
     <div className="w-full h-full">
