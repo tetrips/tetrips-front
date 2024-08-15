@@ -19,8 +19,7 @@ import { useState } from 'react';
 import { Destination, Itinerary } from '@/types/Project';
 import { OptimizedRouteButton } from './OptimizedRouteButton';
 import OptimizedRoute from './OptimizedRoute';
-import { PlusIcon, ArrowPathIcon, ClockIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { useYjs } from '@/hooks/useYjs';
+import { PlusIcon, ArrowPathIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
 interface ItineraryDayViewProps {
   itinerary: Itinerary;
@@ -146,14 +145,13 @@ export default function ItineraryDayView({
       <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto no-scrollbar">
         <LocationBox type="start" place={itinerary.startPlace} />
         
-        <div className="flex-grow">
+        <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-gray-700">여행 일정</h3>
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-700">여행 일정</h3>
             <div className="flex space-x-2">
               {optimizedRoute && optimizedRoute.length > 0 &&
                 <OptimizedRouteButton
                   onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
-                  isOpen={isOptimizedRouteOpen}
                 />
               }
               <button
@@ -198,7 +196,6 @@ export default function ItineraryDayView({
       </div>
       {isOptimizedRouteOpen && optimizedRoute && (
         <OptimizedRoute
-        isOpen={isOptimizedRouteOpen}
         route={optimizedRoute}
         onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
         />

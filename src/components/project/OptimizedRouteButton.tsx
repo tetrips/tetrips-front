@@ -2,10 +2,9 @@
 
 interface OptimizedRouteButtonProps {
   onClick: () => void;
-  isOpen: boolean;
 }
 
-export function OptimizedRouteButton({ onClick, isOpen }: OptimizedRouteButtonProps) {
+export function OptimizedRouteButton({ onClick }: OptimizedRouteButtonProps) {
 
   return (
     <button

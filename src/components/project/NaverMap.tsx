@@ -10,6 +10,7 @@ export default function NaverMap({project}: {project: ClientProject}) {
   const { markers } = useYjs({project});
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerInstancesRef = useRef<{ [key: string]: naver.maps.Marker }>({});
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const dateColorMap = useMemo(() => {
     const uniqueDates = Array.from(new Set(markers.map(m => m.date)));
@@ -18,6 +19,7 @@ export default function NaverMap({project}: {project: ClientProject}) {
   
 
   useEffect(() => {
+    if (!mapContainerRef.current) return;
     const mapOptions: naver.maps.MapOptions = {
       center: new naver.maps.LatLng(37.3614483, 127.1114883),
       zoom: 12,
@@ -29,7 +31,11 @@ export default function NaverMap({project}: {project: ClientProject}) {
       },
     };
 
-    mapRef.current = new naver.maps.Map('map', mapOptions);
+    mapRef.current = new naver.maps.Map(mapContainerRef.current, mapOptions);
+
+    if (mapContainerRef.current) {
+      mapContainerRef.current.style.zIndex = '1';
+    }
   }, []);
 
   useEffect(() => {
@@ -125,7 +131,7 @@ export default function NaverMap({project}: {project: ClientProject}) {
 
   return (
     <div className="w-full h-full">
-      <div id="map" className="h-full w-full" />
+      <div id="map" ref={mapContainerRef} className="h-full w-full" />
     </div>
   );
 }
