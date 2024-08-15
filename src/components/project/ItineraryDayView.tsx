@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { Destination, Itinerary } from '@/types/Project';
 import { OptimizedRouteButton } from './OptimizedRouteButton';
 import OptimizedRoute from './OptimizedRoute';
-import { PlusIcon, ArrowPathIcon, ClockIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, ArrowPathIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
 interface ItineraryDayViewProps {
   itinerary: Itinerary;
@@ -29,6 +29,8 @@ interface ItineraryDayViewProps {
   reorderDestinations: (newOrder: string[]) => void;
   updateDestinationDuration: (destinationId: string, duration: number) => void;
   updateDestinationDescription: (destinationId: string, description: string) => void;
+  optimizedRoute: Destination[] | undefined;
+  setOptimizedRoute: (route: Destination[]) => void;
 }
 
 export default function ItineraryDayView({
@@ -39,6 +41,8 @@ export default function ItineraryDayView({
   reorderDestinations,
   updateDestinationDuration,
   updateDestinationDescription,
+  optimizedRoute,
+  setOptimizedRoute,
 }: ItineraryDayViewProps) {
 
   const sensors = useSensors(
@@ -48,7 +52,6 @@ export default function ItineraryDayView({
     })
   );
 
-  const [optimizedRoute, setOptimizedRoute] = useState<Destination[]>([]);
   const [isOptimizedRouteOpen, setIsOptimizedRouteOpen] = useState(false);
 
   const handleDayStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,17 +138,22 @@ export default function ItineraryDayView({
           type="time"
           value={itinerary.dayStartTime} 
           onChange={handleDayStartTimeChange}
-          className="text-xs text-gray-700 focus:outline-none w-24 focus:ring-0"
+          className="text-xs text-gray-700 focus:outline-none w-32 focus:ring-0"
         />
       </div>
 
-      <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto">
+      <div className="flex-grow flex flex-col space-y-2 p-4 overflow-y-auto no-scrollbar">
         <LocationBox type="start" place={itinerary.startPlace} />
         
-        <div className="flex-grow">
+        <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-gray-700">여행 일정</h3>
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-700">여행 일정</h3>
             <div className="flex space-x-2">
+              {optimizedRoute && optimizedRoute.length > 0 &&
+                <OptimizedRouteButton
+                  onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
+                />
+              }
               <button
                 onClick={() => onOpenModal('add')}
                 className="bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors duration-200 flex items-center"
@@ -186,6 +194,12 @@ export default function ItineraryDayView({
         </div>
         <LocationBox type="end" place={itinerary.endPlace} />
       </div>
+      {isOptimizedRouteOpen && optimizedRoute && (
+        <OptimizedRoute
+        route={optimizedRoute}
+        onClick={() => setIsOptimizedRouteOpen(!isOptimizedRouteOpen)}
+        />
+      )}
     </div>
   );
 }

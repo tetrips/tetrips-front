@@ -43,12 +43,6 @@ export default function ProjectList({projects}:{projects:ClientProject[]}) {
           </div>
           <div className="flex flex-none items-center gap-x-4">
             <ItineraryModalButton project={project}/>
-            <a
-              href={`/project/${project.id}/image`}
-              className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
-            >
-              View project<span className="sr-only">, {project.title}</span>
-            </a>
             <Menu as="div" className="relative flex-none">
               <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
                 <span className="sr-only">Open options</span>
