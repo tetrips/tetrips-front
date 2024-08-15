@@ -36,7 +36,7 @@ export function SortableItem({ id, destination, updateDestinationDuration,update
       className="bg-white border-b border-gray-100 p-4 flex items-center space-x-4 group hover:bg-gray-50 transition-colors duration-200"
     >
       <div {...listeners} className="cursor-grab flex-shrink-0 text-gray-300 group-hover:text-gray-400 transition-colors duration-200">
-        <Bars3Icon className="w-5 h-5" />
+        <Bars3Icon className="w-6 h-6" />
       </div>
       <div className={`${noto.className} flex-grow min-w-0 space-y-1`}>
         <p className="text-sm font-medium text-gray-700 truncate">{destination.title}</p>

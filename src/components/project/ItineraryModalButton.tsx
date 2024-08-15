@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ClientProject } from '@/types/Project';
-import TravelItineraryView from './TravelItineraryView';
+import ItineraryModal from './ItineraryModal';
 
 export default function ItineraryModalButton({ project }: { project: ClientProject }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,9 +19,9 @@ export default function ItineraryModalButton({ project }: { project: ClientProje
       </button>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white rounded-lg shadow-lg w-[1200px] h-[850px] p-4">
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-[90vw] h-[90vh] max-w-[1200px] p-4 sm:p-6">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200">
               <button
                 onClick={closeModal}
                 className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
@@ -29,9 +29,11 @@ export default function ItineraryModalButton({ project }: { project: ClientProje
                 <XMarkIcon className="h-6 w-6" />
               </button>
             </div>
-            <div className="overflow-auto" style={{ maxHeight: 'calc(90vh - 60px)' }}>
-              <TravelItineraryView project={project} />
+
+            <div className="bg-white">
+              <ItineraryModal project={project} />
             </div>
+
           </div>
         </div>
       )}
