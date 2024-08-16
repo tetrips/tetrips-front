@@ -9,6 +9,7 @@ export interface Project {
   createdAt: Date;
   guests: Guest[];
   itineraries: Itinerary[];
+  folderId?: ObjectId | null;
 }
 
 export interface ClientProject {
@@ -20,6 +21,7 @@ export interface ClientProject {
   createdAt: string;
   guests: Guest[];
   itineraries: Itinerary[];
+  folderId?: string | null;
 }
 
 export interface Guest {
