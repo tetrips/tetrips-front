@@ -1,7 +1,9 @@
 import { getAccessToken } from '@/services/getAccessToken'
+import Cookies from 'js-cookie'
 
 export const getUserInfo = async () => {
   const token = await getAccessToken()
+  const email = Cookies.get('username')
   if (!token) {
     console.log(token)
     console.log('토큰이 없어서 작업을 수행하지 못했습니다.')
@@ -9,12 +11,12 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/getUserInfo`,
+      `${process.env.NEXT_PUBLIC_API_URL}/user/getUserInfo?email=${email}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token,
+          'Authorization': token,
         },
         cache: 'no-cache',
       },
