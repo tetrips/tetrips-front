@@ -1,3 +1,4 @@
+'use client'
 import { getNickname } from '@/services/getNickname'
 export default function Page() {
   const res = async () => {
