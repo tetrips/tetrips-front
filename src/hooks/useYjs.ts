@@ -131,13 +131,13 @@ export function useYjs({ project }: { project: ClientProject }) {
     itineraries.forEach(itinerary => {
       let dayIndex = 1;
       if (itinerary.startPlace) {
-        newMarkers.push(createMarkerData('start', itinerary.startPlace, itinerary.date, dayIndex++));
+        newMarkers.push(createMarkerData('start', itinerary.startPlace, itinerary.date, dayIndex++, itinerary.itineraryId));
       }
       itinerary.destinations?.forEach(dest => {
-        newMarkers.push(createMarkerData('destination', dest, itinerary.date, dayIndex++));
+        newMarkers.push(createMarkerData('destination', dest, itinerary.date, dayIndex++, itinerary.itineraryId));
       });
       if (itinerary.endPlace) {
-        newMarkers.push(createMarkerData('end', itinerary.endPlace, itinerary.date, dayIndex));
+        newMarkers.push(createMarkerData('end', itinerary.endPlace, itinerary.date, dayIndex, itinerary.itineraryId));
       }
     });
     return newMarkers;
@@ -320,9 +320,9 @@ export function useYjs({ project }: { project: ClientProject }) {
   };
 }
 
-function createMarkerData(type: 'start' | 'destination' | 'end', place: Destination,date:string,index:number): MarkerData {
+function createMarkerData(type: 'start' | 'destination' | 'end', place: Destination, date: string, index: number, itineraryId: string): MarkerData {
   return {
-    id: type === 'destination' ? place.id : `${type}-${place.id}`,
+    id: `${itineraryId}-${type === 'destination' ? place.id : `${type}-${place.id}`}`,
     mapx: place.mapx,
     mapy: place.mapy,
     roadAddress: place.roadAddress,
@@ -333,4 +333,3 @@ function createMarkerData(type: 'start' | 'destination' | 'end', place: Destinat
     dayIndex: index
   };
 }
-
