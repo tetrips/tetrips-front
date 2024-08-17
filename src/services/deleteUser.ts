@@ -13,7 +13,7 @@ export const deleteUser = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/deleteUser?email=${email}`,
+      `${process.env.API_BASE_URL}/user/deleteUser?email=${email}`,
       {
         method: 'DELETE',
         credentials: 'include',

@@ -11,12 +11,12 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/getUserInfo?email=${email}`,
+      `${process.env.API_BASE_URL}/user/getUserInfo?email=${email}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          Authorization: token,
         },
         cache: 'no-cache',
       },
