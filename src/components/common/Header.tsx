@@ -58,12 +58,6 @@ export default function Header() {
                   >
                     결제 플랜
                   </Link>
-                  <Link
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    게시판
-                  </Link>
                 </div>
               </div>
               <LoginOut />
