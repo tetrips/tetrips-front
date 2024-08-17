@@ -15,6 +15,7 @@ import { getUserInfo } from '@/services/getUserInfo'
 import { updateUserInfo } from '@/services/updateUserInfo'
 import { existsNicknameCheck } from '@/services/existsCheck'
 import { redirect } from 'next/navigation'
+
 const secondaryNavigation = [
   {
     name: '개인 정보',
@@ -42,7 +43,11 @@ function classNames(...classes: string[]) {
 type EditModeKey = 'nickname' | 'email' | 'birthDate'
 
 export default function Page() {
-  let userInfo: { nickname: string; email: string; birthDate: string }
+  const [userInfo, setUserInfo] = useState<{
+    nickname: string
+    email: string
+    birthDate: string
+  } | null>(null)
   const [isNicknameChecked, setIsNicknameChecked] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [editMode, setEditMode] = useState<Record<EditModeKey, boolean>>({
@@ -55,10 +60,12 @@ export default function Page() {
     email: '',
     birthDate: '',
   })
+
   useEffect(() => {
     const fetchUserInfo = async () => {
-      userInfo = await getUserInfo()
+      const userInfo = await getUserInfo()
       if (userInfo) {
+        setUserInfo(userInfo)
         setFormData({
           nickname: userInfo.nickname,
           email: userInfo.email,
@@ -92,10 +99,12 @@ export default function Page() {
       setIsNicknameChecked(false)
     }
   }
+
   const validateNickname = (nickname: string) => {
     const re = /^[a-zA-Z가-힣0-9]+$/
     return re.test(nickname)
   }
+
   const handleNicknameCheck = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -124,18 +133,21 @@ export default function Page() {
       }
     }
   }
+
   const handleCancelClick = () => {
-    setEditMode({
-      nickname: false,
-      email: false,
-      birthDate: false,
-    })
-    setFormData({
-      nickname: userInfo.nickname,
-      email: userInfo.email,
-      birthDate: userInfo.birthDate,
-    })
-    setIsUpdating(false)
+    if (userInfo) {
+      setEditMode({
+        nickname: false,
+        email: false,
+        birthDate: false,
+      })
+      setFormData({
+        nickname: userInfo.nickname,
+        email: userInfo.email,
+        birthDate: userInfo.birthDate,
+      })
+      setIsUpdating(false)
+    }
   }
 
   const handleSaveAllClick = async () => {

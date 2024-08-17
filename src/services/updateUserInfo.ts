@@ -23,7 +23,7 @@ export const updateUserInfo = async (userInfo: {
     if (res.status === 200) {
       const data = await res.json()
       alert('회원정보가 수정되었습니다.')
-      console.log('User info updated:', data)
+      window.location.reload()
       return data
     } else {
       console.log('status가 200이 아닙니다.')
