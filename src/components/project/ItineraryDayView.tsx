@@ -117,10 +117,10 @@ export default function ItineraryDayView({
   const LocationBox = ({ type, place }: { type: 'start' | 'end', place: Destination | undefined }) => (
     <div 
       onClick={() => onOpenModal(type)}
-      className={`w-full p-3 bg-white border-l-4 ${type === 'start' ? 'border-l-cyan-400' : 'border-l-pink-400'} rounded-md flex items-center justify-between text-gray-700 hover:bg-gray-50 cursor-pointer transition-all duration-200 group shadow-sm`}
+      className={`w-full p-3 bg-white border-l-4 ${type === 'start' ? 'border-l-emerald-500' : 'border-l-rose-400'} rounded-md flex items-center justify-between text-gray-700 hover:bg-gray-50 cursor-pointer transition-all duration-200 group shadow-sm`}
     >
       <div className="flex items-center space-x-3">
-        <MapPinIcon className={`h-5 w-5 ${type === 'start' ? 'text-cyan-500' : 'text-pink-500'}`} />
+        <MapPinIcon className={`h-5 w-5 ${type === 'start' ? 'text-emerald-600' : 'text-rose-500'}`} />
         <p className='font-medium text-sm'>{place ? place.title : `${type === 'start' ? '출발' : '도착'}지점 선택`}</p>
       </div>
       {!place && <PlusIcon className="h-5 w-5 text-gray-400 group-hover:text-cyan-500 transition-colors duration-200" />}

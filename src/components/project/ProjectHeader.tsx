@@ -14,7 +14,7 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
     setGuests(project.guests);
   }, [project.guests]);
   
-  const colors = ['bg-sky-300', 'bg-rose-300', 'bg-green-300', 'bg-purple-300', 'bg-yellow-300','bg-pink-300','bg-orange-300','bg-violet-300','bg-indigo-300','bg-blueGray-300'];
+  const colors = ['bg-[#ff8d8d]', 'bg-[#ffb785]', 'bg-[#fdff96]', 'bg-[#8eff9f]', 'bg-[#5ff6ff]', 'bg-[#60a4ff]', 'bg-[#9d8bff]', 'bg-[#ff86ff]', 'bg-[#fa8351]', 'bg-[#f59d77]', 'bg-[#dccb88]', 'bg-[#c5d39a]', 'bg-[#2ddbad]', 'bg-[#5073f1]', 'bg-[#9a58eb]', 'bg-[#d14b58]'];
 
   const handleInvite = () => {
     navigator.clipboard.writeText(`${window.location.origin}/project/${project.id}`);
@@ -49,13 +49,13 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
           ))}
           <button
             onClick={handleInvite}
-            className="bg-color8 mx-1 text-white text-xs sm:text-xs px-5 py-2 rounded"
+            className="mx-1 text-cyan-500 border border-cyan-500 text-xs sm:text-xs px-5 py-2 rounded-2xl"
           >
-            초대
+            초대 링크 복사
           </button>
           <button
             onClick={handleComplete}
-            className="bg-cyan-500 text-white text-xs sm:text-xs px-5 py-2 rounded"
+            className="bg-cyan-500 text-white text-xs sm:text-xs px-5 py-2 rounded-2xl"
           >
             {isSaving ? '저장 중...' : '저장'}
           </button>

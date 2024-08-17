@@ -34,7 +34,8 @@ export async function fetchProjectsByUserId(username: string): Promise<ClientPro
       createdAt: project.createdAt.toISOString().split('T')[0],
       guests: project.guests,
       itineraries: project.itineraries,
-    })) as ClientProject[];
+      folderId: project.folderId ? project.folderId.toString() : null,
+    })) as ClientProject[] | null;
 
     return projects;
   } catch (error) {
@@ -42,6 +43,7 @@ export async function fetchProjectsByUserId(username: string): Promise<ClientPro
     throw new Error('Failed to fetch projects.');
   }
 }
+
 
 export async function fetchProjectById(projectId:string):Promise<ClientProject> {
   unstable_noStore();
@@ -84,5 +86,6 @@ export async function inviteGuest(projectId: string, email: string, nickname: st
     throw error; 
   }
 }
+
 
 
