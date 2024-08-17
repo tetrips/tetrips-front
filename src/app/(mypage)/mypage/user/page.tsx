@@ -88,6 +88,9 @@ export default function Page() {
       setIsUpdating(Object.values(newMode).some((mode) => mode))
       return newMode
     })
+    if (field === 'nickname') {
+      setIsNicknameChecked(false)
+    }
   }
   const validateNickname = (nickname: string) => {
     const re = /^[a-zA-Z가-힣0-9]+$/
