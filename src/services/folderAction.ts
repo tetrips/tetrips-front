@@ -1,7 +1,6 @@
 'use server';
 
 import clientPromise from "@/libs/mongodb";
-import { convertToKoreanDate } from "@/utils/formatTime";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
