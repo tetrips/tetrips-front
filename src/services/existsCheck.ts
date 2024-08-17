@@ -1,6 +1,6 @@
 export async function existsEmailCheck(email: string) {
   const response = await fetch(
-    `${process.env.API_BASE_URL}/user/exists-email?email=${email}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/exists-email?email=${email}`,
     {},
   )
   console.log(response)
@@ -19,7 +19,7 @@ export async function existsNicknameCheck(nickname: string) {
     .join('')
   // utf-8로 인코딩 후 url-safe 인코딩
   const response = await fetch(
-    `${process.env.API_BASE_URL}/user/exists-nickname?nickname=${encodedNickname}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/exists-nickname?nickname=${encodedNickname}`,
     {},
   )
   console.log(response)
