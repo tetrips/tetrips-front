@@ -8,16 +8,13 @@ export const getNickname = async () => {
     return null
   }
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/getNickname`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
+    const res = await fetch(`${process.env.API_BASE_URL}/auth/getNickname`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
       },
-    )
+    })
     if (res.status === 200) {
       const data = await res.json()
       console.log(data)
