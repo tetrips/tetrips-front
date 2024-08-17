@@ -6,6 +6,8 @@ import { cookies } from 'next/headers'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import { redirect } from 'next/navigation'
+import { fetchFoldersByUserId } from '@/services/folderService'
+
 
 
 export default async function Page() {
@@ -18,13 +20,14 @@ export default async function Page() {
   
 
   const projects = await fetchProjectsByUserId(test);
+  const folders = await fetchFoldersByUserId(test);
 
   if (!projects || projects.length === 0) {
     return (
       <>
         <Header />
         <div className="flex pt-10">
-          <Sidebar />
+          <Sidebar projects={projects} folders={folders} />
           <NoProject />
         </div>
         <Footer />
@@ -34,9 +37,8 @@ export default async function Page() {
   return (
     <>
       <Header />
-      <div className="flex">
-        <Sidebar />
-        <ProjectList projects={projects} />
+      <div className="h-screen">
+        <Sidebar projects={projects} folders={folders}/>
       </div>
       <Footer />
     </>
