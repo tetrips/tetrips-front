@@ -7,6 +7,7 @@ export const getUserInfo = async () => {
   if (!token) {
     console.log(token)
     console.log('토큰이 없어서 작업을 수행하지 못했습니다.')
+    window.location.reload()
     return null
   }
   try {
