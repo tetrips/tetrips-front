@@ -37,7 +37,7 @@ export default function Login() {
       if (res.ok) {
         console.log(res)
         // router.push('/');
-        // window.location.href = '/'
+        window.location.href = '/'
       } else {
         console.error('Login failed')
         setIsError(true)
