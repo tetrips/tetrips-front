@@ -13,13 +13,16 @@ export async function signupFetch(formData: FormData) {
   }
   console.log(data)
   try {
-    const res = await fetch(`${process.env.API_BASE_URL}/auth/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/signup`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    })
+    )
     console.log(res)
   } catch (error) {
     console.log(error)
