@@ -1,5 +1,13 @@
-import { Place } from '@/types/Place';
 import { NextResponse } from 'next/server';
+interface SearchResponse {
+  title: string;
+  roadAddress?: string;
+  address?: string;
+  category: string;
+  mapx: number;
+  mapy: number;
+  link?: string;
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,9 +37,9 @@ export async function GET(request: Request) {
           page: 1,
           count: searchData.display
         },
-        places: searchData.items.map((item: Place) => ({
+        places: searchData.items.map((item: SearchResponse) => ({
           title: item.title.replace(/<[^>]*>/g, ''),
-          roadAddress: item.roadAddress,
+          roadAddress: item.roadAddress || item.address,
           mapx: item.mapx,
           mapy: item.mapy,
           category: item.category,

@@ -9,7 +9,7 @@ export const getNickname = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/getNickname`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/getNickname`,
       {
         method: 'GET',
         headers: {
