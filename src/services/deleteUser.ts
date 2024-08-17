@@ -16,7 +16,6 @@ export const deleteUser = async () => {
       `http://api.tetrips.co.kr/user/deleteUser?email=${email}`,
       {
         method: 'DELETE',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,

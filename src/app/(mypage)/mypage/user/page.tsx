@@ -174,102 +174,106 @@ export default function Page() {
                 Update 버튼을 눌러 수정할 수 있습니다.
               </p>
 
-              <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    닉네임
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    {editMode.nickname ? (
-                      <>
+              <form>
+                <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      닉네임
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      {editMode.nickname ? (
+                        <>
+                          <input
+                            type="text"
+                            name="nickname"
+                            value={formData.nickname}
+                            onChange={handleInputChange}
+                            className="text-gray-900"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleNicknameCheck}
+                            className={classNames(
+                              'min-w-[8rem] rounded-md p-2',
+                              isNicknameChecked ? 'bg-cyan-500' : 'bg-gray-200',
+                            )}
+                          >
+                            중복 체크
+                          </button>
+                        </>
+                      ) : (
+                        <div className="text-gray-900">{formData.nickname}</div>
+                      )}
+                      <button
+                        type="button"
+                        className="font-semibold text-cyan-500 hover:text-indigo-500"
+                        onClick={() =>
+                          editMode.nickname
+                            ? handleSaveClick('nickname')
+                            : handleEditClick('nickname')
+                        }
+                        disabled={editMode.nickname && !isNicknameChecked}
+                      >
+                        {editMode.nickname ? 'Save' : 'Update'}
+                      </button>
+                    </dd>
+                  </div>
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      이메일
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      <div className="text-gray-900">{formData.email}</div>
+                    </dd>
+                  </div>
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      생년월일
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      {editMode.birthDate ? (
                         <input
-                          type="text"
-                          name="nickname"
-                          value={formData.nickname}
+                          type="date"
+                          name="birthDate"
+                          value={formData.birthDate}
                           onChange={handleInputChange}
                           className="text-gray-900"
                         />
-                        <button
-                          type="button"
-                          onClick={handleNicknameCheck}
-                          className={classNames(
-                            'min-w-[8rem] rounded-md p-2',
-                            isNicknameChecked ? 'bg-cyan-500' : 'bg-gray-200',
-                          )}
-                        >
-                          중복 체크
-                        </button>
-                      </>
-                    ) : (
-                      <div className="text-gray-900">{formData.nickname}</div>
+                      ) : (
+                        <div className="text-gray-900">
+                          {formData.birthDate}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        className="font-semibold text-cyan-500 hover:text-indigo-500"
+                        onClick={() =>
+                          editMode.birthDate
+                            ? handleSaveClick('birthDate')
+                            : handleEditClick('birthDate')
+                        }
+                      >
+                        {editMode.birthDate ? 'Save' : 'Update'}
+                      </button>
+                    </dd>
+                  </div>
+                </dl>
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    className={classNames(
+                      'mt-10 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+                      isUpdating
+                        ? 'bg-gray-200'
+                        : 'bg-cyan-500 hover:bg-indigo-500',
                     )}
-                    <button
-                      type="button"
-                      className="font-semibold text-cyan-500 hover:text-indigo-500"
-                      onClick={() =>
-                        editMode.nickname
-                          ? handleSaveClick('nickname')
-                          : handleEditClick('nickname')
-                      }
-                      disabled={editMode.nickname && !isNicknameChecked}
-                    >
-                      {editMode.nickname ? 'Save' : 'Update'}
-                    </button>
-                  </dd>
+                    onClick={handleSaveAllClick}
+                    disabled={isUpdating}
+                  >
+                    저장하기
+                  </button>
                 </div>
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    이메일
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">{formData.email}</div>
-                  </dd>
-                </div>
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    생년월일
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    {editMode.birthDate ? (
-                      <input
-                        type="date"
-                        name="birthDate"
-                        value={formData.birthDate}
-                        onChange={handleInputChange}
-                        className="text-gray-900"
-                      />
-                    ) : (
-                      <div className="text-gray-900">{formData.birthDate}</div>
-                    )}
-                    <button
-                      type="button"
-                      className="font-semibold text-cyan-500 hover:text-indigo-500"
-                      onClick={() =>
-                        editMode.birthDate
-                          ? handleSaveClick('birthDate')
-                          : handleEditClick('birthDate')
-                      }
-                    >
-                      {editMode.birthDate ? 'Save' : 'Update'}
-                    </button>
-                  </dd>
-                </div>
-              </dl>
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className={classNames(
-                    'mt-10 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-                    isUpdating
-                      ? 'bg-gray-200'
-                      : 'bg-cyan-500 hover:bg-indigo-500',
-                  )}
-                  onClick={handleSaveAllClick}
-                  disabled={isUpdating}
-                >
-                  저장하기
-                </button>
-              </div>
+              </form>
             </div>
           </div>
         </main>
