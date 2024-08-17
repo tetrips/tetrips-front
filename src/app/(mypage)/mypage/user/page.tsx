@@ -42,6 +42,7 @@ function classNames(...classes: string[]) {
 type EditModeKey = 'nickname' | 'email' | 'birthDate'
 
 export default function Page() {
+  let userInfo: { nickname: string; email: string; birthDate: string }
   const [isNicknameChecked, setIsNicknameChecked] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [editMode, setEditMode] = useState<Record<EditModeKey, boolean>>({
@@ -56,7 +57,7 @@ export default function Page() {
   })
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const userInfo = await getUserInfo()
+      userInfo = await getUserInfo()
       if (userInfo) {
         setFormData({
           nickname: userInfo.nickname,
@@ -120,6 +121,20 @@ export default function Page() {
       }
     }
   }
+  const handleCancelClick = () => {
+    setEditMode({
+      nickname: false,
+      email: false,
+      birthDate: false,
+    })
+    setFormData({
+      nickname: userInfo.nickname,
+      email: userInfo.email,
+      birthDate: userInfo.birthDate,
+    })
+    setIsUpdating(false)
+  }
+
   const handleSaveAllClick = async () => {
     await updateUserInfo(formData)
     console.log('All changes saved:', formData)
@@ -216,6 +231,15 @@ export default function Page() {
                       >
                         {editMode.nickname ? 'Save' : 'Update'}
                       </button>
+                      {editMode.nickname && !isNicknameChecked && (
+                        <button
+                          type="button"
+                          className="font-semibold text-red-500 hover:text-red-700"
+                          onClick={handleCancelClick}
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </dd>
                   </div>
                   <div className="pt-6 sm:flex">
