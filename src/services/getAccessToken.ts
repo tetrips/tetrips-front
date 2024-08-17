@@ -6,16 +6,13 @@ export async function getAccessToken() {
     console.log('tokenFetch 함수 : ' + refreshToken)
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/cookie/return/refresh`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refreshToken }),
+      const res = await fetch(`/api/cookie/return/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({ refreshToken }),
+      })
 
       if (res.ok) {
         console.log('res.ok :' + res.ok)
