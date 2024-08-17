@@ -7,6 +7,7 @@ import { CreateProject, DeleteProject, UpdateProject } from './ProjectButton';
 import ItineraryModalButton from './ItineraryModalButton';
 import { ClientFolder } from '@/types/Folder';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 
 export default function ProjectList({ projects, folderId, folders }: { projects: ClientProject[] | null, folderId: string | null, folders: ClientFolder[] | null }) {
@@ -44,7 +45,11 @@ export default function ProjectList({ projects, folderId, folders }: { projects:
         <li key={project.id} className="flex items-center justify-between gap-x-6 py-5">
           <div className="min-w-0">
             <div className="flex items-start gap-x-3">
-              <p className="text-sm font-semibold leading-6 text-gray-900">{project.title}</p>
+              <Link
+                href={`/project/${project.id}`}
+              >
+                <p className="text-sm font-semibold leading-6 text-gray-900">{project.title}</p>
+              </Link>
               <p
                 className={clsx(
                   project.itineraries.length > 0,
