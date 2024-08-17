@@ -26,6 +26,7 @@ export const getUserInfo = async () => {
       return data
     } else {
       console.log('status가 200이 아닙니다.')
+      console.log(res)
     }
   } catch (error) {
     console.error(error)
