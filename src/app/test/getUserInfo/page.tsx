@@ -1,7 +1,5 @@
 'use client'
-import Cookies from 'js-cookie'
 import { getUserInfo } from '@/services/getUserInfo'
-import { getAccessToken } from '@/services/getAccessToken'
 export default function Page() {
   const res = async () => {
     return await getUserInfo()
