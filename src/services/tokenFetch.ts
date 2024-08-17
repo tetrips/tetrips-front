@@ -7,6 +7,7 @@ export async function tokenRefresh() {
 
     try {
       const res = await fetch(`/api/cookie/return/refresh`, {
+        // const res = await fetch(`/api/cookie/return/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
