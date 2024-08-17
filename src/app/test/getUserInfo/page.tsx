@@ -1,4 +1,3 @@
-'use client'
 import Cookies from 'js-cookie'
 import { getUserInfo } from '@/services/getUserInfo'
 import { getAccessToken } from '@/services/getAccessToken'
