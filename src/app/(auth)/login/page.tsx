@@ -19,14 +19,14 @@ export default function Login() {
   //   if (username) {
   //     router.push('/')
   //   }
-  // }, [router])
+  // }, [router])w
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     try {
       // const res = await fetch(`http://localhost:3000/test/login`, {
-      // const res = await fetch(`/api/cookie/return/first`, {
-      const res = await fetch(`http://api.tetrips.co.kr/auth/login/local`, {
+      const res = await fetch(`/api/cookie/return/first`, {
+        // const res = await fetch(`https://api.tetrips.co.kr/auth/login/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export default function Login() {
       })
 
       if (res.ok) {
-        console.log(res)
+        //console.log(res)
         // router.push('/');
         window.location.href = '/'
       } else {

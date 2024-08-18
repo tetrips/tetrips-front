@@ -1,9 +1,9 @@
 export async function existsEmailCheck(email: string) {
   const response = await fetch(
-    `http://api.tetrips.co.kr/user/exists-email?email=${email}`,
+    `https://api.tetrips.co.kr/user/exists-email?email=${email}`,
     {},
   )
-  console.log(response)
+  //console.log(response)
   if (response.status === 409) {
     return 'fail'
   } else if (response.status === 200) {
@@ -19,10 +19,10 @@ export async function existsNicknameCheck(nickname: string) {
     .join('')
   // utf-8로 인코딩 후 url-safe 인코딩
   const response = await fetch(
-    `http://api.tetrips.co.kr/user/exists-nickname?nickname=${encodedNickname}`,
+    `https://api.tetrips.co.kr/user/exists-nickname?nickname=${encodedNickname}`,
     {},
   )
-  console.log(response)
+  //console.log(response)
   if (response.status === 409) {
     return 'fail'
   } else if (response.status === 200) {
