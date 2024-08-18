@@ -16,12 +16,15 @@ export default function Introduce() {
                   alt="tetrips logo"
                 />
                 <div className="mt-24 sm:mt-32 lg:mt-16">
-                  <a href="#" className="inline-flex space-x-6">
+                  <a
+                    href="https://github.com/tetrips"
+                    className="inline-flex space-x-6"
+                  >
                     <span className="rounded-full bg-indigo-600/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-600 ring-1 ring-inset ring-indigo-600/10">
                       teTrips
                     </span>
                     <span className="inline-flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
-                      <span>Just shipped v0.1.0</span>
+                      <span>버전 v0.1.0</span>
                       <ChevronRightIcon
                         className="h-5 w-5 text-gray-400"
                         aria-hidden="true"
@@ -43,7 +46,7 @@ export default function Introduce() {
                     Documentation
                   </a>
                   <a
-                    href="#"
+                    href="https://github.com/tetrips"
                     className="text-sm font-semibold leading-6 text-gray-900"
                   >
                     View on GitHub <span aria-hidden="true">→</span>
