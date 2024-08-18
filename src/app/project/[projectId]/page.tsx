@@ -16,9 +16,11 @@ export default async function Page({
 }: {
   params: { projectId: string }
 }) {
+
   const usernameData = cookies().get('username')
   if (!usernameData) {
     redirect('/login')
+
   }
   const username = usernameData.value
 
@@ -38,22 +40,17 @@ export default async function Page({
   if (!projectData) {
     notFound()
   }
-  if (
-    projectData.creator !== userData.email &&
-    !projectData.guests.some((guest) => guest.email === userData.email)
-  ) {
-    await inviteGuest(projectId, userData.email, userData.nickname)
-    revalidatePath(`/projects/${projectId}`)
-  }
+
+  if (projectData.creator !== userData.email && !projectData.guests.some(guest => guest.email === userData.email)) {
+    await inviteGuest(projectId, userData.email, userData.nickname);
+    revalidatePath(`/projects/${projectId}`);
+    }
+
 
   return (
-    <div className="flex h-screen flex-col">
-      <ProjectHeader project={projectData} userData={userData} />
-      <EditProjectForm
-        projectData={projectData}
-        placesData={placesData}
-        userData={userData}
-      />
+    <div className="flex flex-col h-screen">
+      <ProjectHeader project={projectData} userData={userData}/>
+      <EditProjectForm projectData={projectData} placesData={placesData} userData={userData}/>
     </div>
   )
 }
