@@ -35,7 +35,7 @@ export default function Login() {
       })
 
       if (res.ok) {
-        console.log(res)
+        //console.log(res)
         // router.push('/');
         window.location.href = '/'
       } else {
