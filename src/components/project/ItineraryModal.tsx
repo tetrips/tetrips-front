@@ -78,13 +78,13 @@ export default function ItineraryModal({ project }: { project: ClientProject }) 
       <div className="flex justify-center space-x-2 pt-2">
         <button
           onClick={() => saveAsImage('png')}
-          className="bg-cyan-500 text-white text-xs px-3 py-1 rounded hover:bg-cyan-800"
+          className="bg-cyan-500 text-white text-xs px-4 py-2 rounded hover:bg-cyan-800"
         >
           PNG로 저장
         </button>
         <button
           onClick={() => saveAsImage('jpg')}
-          className="bg-cyan-500 text-white text-xs px-3 py-1 rounded hover:bg-cyan-800"
+          className="bg-cyan-500 text-white text-xs px-4 py-2 rounded hover:bg-cyan-800"
         >
           JPG로 저장
         </button>

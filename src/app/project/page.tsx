@@ -16,7 +16,6 @@ export default async function Page() {
     redirect('/login');
   }
   const username = usernameData.value;
-  // const test = 'test1@naver.com';
 
   const projects = await fetchProjectsByUserId(username);
   const folders = await fetchFoldersByUserId(username);

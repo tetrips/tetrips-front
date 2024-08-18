@@ -16,14 +16,12 @@ export default async function Page({
 }: {
   params: { projectId: string };
 }) {
-  //로그인한 사용자인지 확인해야함, 로그인하지않았으면 로그인 페이지로 이동시키기
-  //로그인한 사용자면 로그인 사용자 정보가져오기
+
   const usernameData = cookies().get('username');
   if(!usernameData){
     redirect('/login');
   }
   const username = usernameData.value;
-  // const test = 'test1@naver.com';
   
   const userData= {
     email: username,
