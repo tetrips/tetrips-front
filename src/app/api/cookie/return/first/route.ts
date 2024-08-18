@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json()
 
-  const res = await fetch(`http://api.tetrips.co.kr/auth/login/local`, {
+  const res = await fetch(`https://api.tetrips.co.kr/auth/login/local`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
