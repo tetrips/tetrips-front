@@ -80,6 +80,10 @@ export default function ItineraryDayView({
       alert('최적화할 목적지가 충분하지 않습니다.');
       return;
     }
+    if (itinerary.destinations.length > 20) {
+      alert('동선 최적화 기능을 사용할 수 있는 장소는 최대 20개까지 가능합니다.');
+      return;
+    }
   
     try {
       const response = await fetch('/api/optimization', {

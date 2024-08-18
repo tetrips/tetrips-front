@@ -18,7 +18,7 @@ export default function  OptimizedRoute ({ route,onClick }: OptimizedRouteProps)
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-semibold text-gray-800 text-sm">동선 최적화 결과</h2>
           <button 
-            className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 text-sm"
+            className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-900 text-sm"
             onClick={onClick}
           >
             닫기

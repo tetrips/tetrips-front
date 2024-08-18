@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { noto } from '../common/fonts';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { generateColorFromEmail, getContrastColor } from '@/utils/userColor';
 
 interface Message {
   nickname: string;
@@ -28,21 +29,19 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
   const [error, setError] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const stompClientRef = useRef<any>(null);
-  
   const projectId = project.id;
-  const guests = project.guests;
   const userId = userData.email;
   const chatUserId = userId.replace('@', '-');
   const nickname = userData.nickname;
 
   const fetchMessages = useCallback(async () => {
-    if (!process.env.NEXT_PUBLIC_CHAT_API_URL) {
-      console.error('NEXT_PUBLIC_CHAT_API_URL is not defined');
+    if (!process.env.NEXT_PUBLIC_CHAT_URL) {
+      console.error('NEXT_PUBLIC_CHAT_URL is not defined');
       setError('서버 설정 오류가 발생했습니다.');
       return;
     }
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/messages/${projectId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_URL}/api/messages/${projectId}`);
       if (!response.ok) {
         throw new Error('메시지를 불러오지 못했습니다.');
       }
@@ -105,41 +104,41 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     }
   }, [input, nickname, chatUserId, projectId]);
 
-  // useEffect(() => {
-  //   fetchMessages();
+  useEffect(() => {
+    fetchMessages();
 
-  //   const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_SOCKET_URL}/chat`);
-  //   const stompClient = Stomp.over(socket);
+    const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat`);
+    const stompClient = Stomp.over(socket);
 
-  //   stompClient.connect({}, () => {
-  //     stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
+    stompClient.connect({}, () => {
+      stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
 
-  //       const newMessage: Message = JSON.parse(message.body);
-  //       console.log('Received new message:', newMessage);
-  //       setMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         {
-  //           nickname: newMessage.nickname,
-  //           message: newMessage.message,
-  //           userId: newMessage.userId.replace('-', '@'),
-  //           prId: newMessage.prId,
-  //           timestamp: new Date(newMessage.chatTime),
-  //         },
-  //       ]);
-  //     });
-  //   }, (error: any) => {
-  //     console.error('WebSocket error:', error);
-  //     setError('WebSocket 오류가 발생했습니다.');
-  //   });
+        const newMessage: Message = JSON.parse(message.body);
+        console.log('Received new message:', newMessage);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            nickname: newMessage.nickname,
+            message: newMessage.message,
+            userId: newMessage.userId.replace('-', '@'),
+            prId: newMessage.prId,
+            timestamp: new Date(newMessage.chatTime),
+          },
+        ]);
+      });
+    }, (error: any) => {
+      console.error('WebSocket error:', error);
+      setError('WebSocket 오류가 발생했습니다.');
+    });
 
-  //   stompClientRef.current = stompClient;
+    stompClientRef.current = stompClient;
 
-  //   return () => {
-  //     if (stompClientRef.current) {
-  //       stompClientRef.current.disconnect();
-  //     }
-  //   };
-  // }, [projectId]);
+    return () => {
+      if (stompClientRef.current) {
+        stompClientRef.current.disconnect();
+      }
+    };
+  }, [projectId, chatUserId, fetchMessages]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -147,21 +146,24 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     }
   }, [messages]);
 
-  const getUserColor = useCallback((email: string) => {
-    const colors = ['bg-sky-300', 'bg-rose-300', 'bg-green-300', 'bg-purple-300', 'bg-yellow-300', 'bg-pink-300', 'bg-orange-300', 'bg-violet-300', 'bg-indigo-300', 'bg-blueGray-300'];
-    const guestIndex = guests.findIndex(guest => guest.email === email);
-    return colors[guestIndex % colors.length];
-  }, [guests]);
+  const getUserColors = useCallback((email: string) => {
+    const backgroundColor = generateColorFromEmail(email);
+    const textColor = getContrastColor(backgroundColor);
+    return { backgroundColor, textColor };
+  }, []);
 
   const messagesList = messages.map((msgObj, index) => {
     const messageTime = msgObj.timestamp ? msgObj.timestamp.toLocaleString() : ''; 
-    const userColor = getUserColor(msgObj.userId);
+    const { backgroundColor, textColor } = getUserColors(msgObj.userId);
 
     return (
       <div key={`${index}-${msgObj.userId}`} className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}>
         {msgObj.userId !== userId && (
           <div className="flex flex-col items-center mr-2">
-            <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center ${userColor}`}>
+            <div 
+              className="w-8 h-8 rounded-full text-white flex items-center justify-center"
+              style={{ backgroundColor, color: textColor }}
+            >
               {msgObj.nickname.charAt(0)}
             </div>
           </div>
@@ -172,7 +174,7 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
               {msgObj.nickname}
             </div>
           )}
-          <div className={`${noto.className} px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-800'}`}>
+          <div className={`${noto.className} px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-sky-300 text-white' : 'bg-gray-100 text-gray-800'}`}>
             {msgObj.message}
           </div>
           <div className="text-gray-500 mt-1">
@@ -181,7 +183,10 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
         </div>
         {msgObj.userId === userId && (
           <div className="flex flex-col items-center ml-2">
-            <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center ${userColor}`}>
+            <div 
+              className="w-8 h-8 rounded-full text-white flex items-center justify-center"
+              style={{ backgroundColor, color: textColor }}
+            >
               {msgObj.nickname.charAt(0)}
             </div>
           </div>
@@ -192,30 +197,25 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   return (
     <div className="bg-white flex flex-col w-full h-full relative">
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline"> {error}</span>
-        </div>
-      )}
       <div className="pl-2 pr-6 py-2 border w-full flex flex-col h-full">
         <div ref={chatContainerRef} className="flex-1 p-2 border rounded-xl overflow-y-auto no-scrollbar">
           <div className="flex flex-col space-y-4 p-2">
             {messagesList}
           </div>
         </div>
-        <div className="flex-none bg-white py-1 pr-2">
+        <div className="flex-none bg-white py-1 pr-1">
           <div className="flex items-center space-x-2">
             <input
-              className="flex-1 py-1 px-1 border rounded-lg focus:outline-none text-sm"
+              className="flex-1 py-2 px-1 border rounded-lg focus:outline-none text-xs"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="여기에 메시지를 입력하세요..."
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyUp={(e) => e.key === 'Enter' && sendMessage()}
+              autoComplete="off"
             />
             <button
-              className="p-2 bg-cyan-500 text-white rounded w-10"
+              className="p-2 bg-cyan-500 text-white rounded w-8 h-8 flex items-center justify-center"
               onClick={sendMessage}
             >
               <PlusIcon className="w-6 h-6" />
