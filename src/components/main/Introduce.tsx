@@ -18,7 +18,7 @@ export default function Introduce() {
                 <div className="mt-24 sm:mt-32 lg:mt-16">
                   <a href="#" className="inline-flex space-x-6">
                     <span className="rounded-full bg-indigo-600/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-600 ring-1 ring-inset ring-indigo-600/10">
-                      테스트 입니다.
+                      teTrips
                     </span>
                     <span className="inline-flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
                       <span>Just shipped v0.1.0</span>
@@ -37,7 +37,7 @@ export default function Introduce() {
                 </p>
                 <div className="mt-10 flex items-center gap-x-6">
                   <a
-                    href="#"
+                    href="/manual"
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     Documentation
