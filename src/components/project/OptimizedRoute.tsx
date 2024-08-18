@@ -35,10 +35,10 @@ export default function  OptimizedRoute ({ route,onClick }: OptimizedRouteProps)
               </div>
               <div className="flex space-x-12 text-xs text-gray-600">
                 <div>
-                  <p>도착 : {formatDateTime(destination.startTime ?? '')}</p>
+                  <p>현재 장소에 도착 : {formatDateTime(destination.startTime ?? '')}</p>
                 </div>
                 <div>
-                  <p>출발: {formatDateTime(destination.endTime ?? '')}</p>
+                  <p>다음 장소로 출발 : {formatDateTime(destination.endTime ?? '')}</p>
                 </div>
               </div>
               <p className="text-xs text-gray-500">{destination.roadAddress}</p>

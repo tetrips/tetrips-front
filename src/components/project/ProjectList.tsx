@@ -59,16 +59,25 @@ export default function ProjectList({ projects, folders }: ProjectListProps) {
                 <p className="whitespace-nowrap">
                   {project.startDate} - {project.endDate}
                 </p>
-                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current">
+                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current hidden md:block">
                   <circle r={1} cx={1} cy={1} />
                 </svg>
-                <p className="truncate">Created by {project.creator} /</p>
-                <p className="truncate">Guests :  {project.guests.map((guest)=>{
-                  return(
-                    <span key={guest.email}>{guest.nickname}</span>
-                  )
-                })}</p>
-
+                <p className="truncate">
+                  Creator: {
+                    project.guests.find((guest) => guest.email === project.creator)?.nickname || 'Unknown'
+                  }
+                </p>
+                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current hidden md:block">
+                  <circle r={1} cx={1} cy={1} />
+                </svg>
+                <p className="truncate">
+                  <span className='px-1'>Collaborators:</span>
+                  <span className="space-x-2">
+                    {project.guests.map((guest) => (
+                      <span key={guest.email}>{guest.nickname}</span>
+                    ))}
+                  </span>
+                </p>
               </div>
             </div>
             <div className="flex flex-none items-center gap-x-4">
@@ -82,38 +91,40 @@ export default function ProjectList({ projects, folders }: ProjectListProps) {
                     transition
                     className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                  <MenuItem>
-                    <UpdateProject projectId={project.id} />
-                  </MenuItem>
-                  <MenuItem>
-                    <DeleteProject projectId={project.id} />
-                  </MenuItem>
-                  <MenuItem>
-                  {folders && 
-                    <Menu as="div" className="relative">
-                      <MenuButton className="block w-full px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50">
-                        Move
-                      </MenuButton>
-                        <MenuItems className="absolute -left-40 top-0 w-40 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          {folders
-                            ?.filter(folder => folder.id !== currentFolderId)
-                            .map((folder) => (
-                              <MenuItem key={folder.id}>
-                                {({ focus }) => (
-                                  <button
-                                    className={`${
-                                      focus ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                    } group flex w-full justify-center items-center px-2 py-2 text-sm`}
-                                    onClick={() => handleAddToFolder(folder.id, project.id)}
-                                  >
-                                    {folder.name}
-                                  </button>
-                                )}
-                              </MenuItem>
-                          ))}
-                        </MenuItems>
-                      </Menu>
-                    }
+                    <MenuItem>
+                      <UpdateProject projectId={project.id} />
+                    </MenuItem>
+                    <MenuItem>
+                      <DeleteProject projectId={project.id} />
+                    </MenuItem>
+                    <MenuItem>
+                      {folders && folders.length > 0 ? (
+                        <Menu as="div" className="relative">
+                          <MenuButton className="block w-full px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50">
+                            Move
+                          </MenuButton>
+                          <MenuItems className="absolute -left-40 top-0 w-40 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            {folders
+                              .filter(folder => folder.id !== currentFolderId)
+                              .map((folder) => (
+                                <MenuItem key={folder.id}>
+                                  {({ focus }) => (
+                                    <button
+                                      className={`${
+                                        focus ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                      } group flex w-full justify-center items-center px-2 py-2 text-sm`}
+                                      onClick={() => handleAddToFolder(folder.id, project.id)}
+                                    >
+                                      {folder.name}
+                                    </button>
+                                  )}
+                                </MenuItem>
+                              ))}
+                          </MenuItems>
+                        </Menu>
+                      ) : (
+                        <div className="px-4 py-2 text-sm text-gray-700">No folders available</div>
+                      )}
                     </MenuItem>
                   </MenuItems>
                 </Menu>
