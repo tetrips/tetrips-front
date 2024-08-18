@@ -25,7 +25,7 @@ export default function NaverMap({ project }: { project: ClientProject }) {
     const mapOptions: naver.maps.MapOptions = {
       center: new naver.maps.LatLng(37.3614483, 127.1114883),
       zoom: 12,
-      minZoom: 10,
+      minZoom: 7,
       zoomControl: true,
       zoomControlOptions: {
         style: naver.maps.ZoomControlStyle.SMALL,

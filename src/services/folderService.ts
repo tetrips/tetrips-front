@@ -23,6 +23,7 @@ export async function fetchFoldersByUserId(username: string): Promise<ClientFold
       id: folder._id.toString(),
       name: folder.name,
       creator: folder.creator,
+      projectIds: folder.projectIds,
     })) as ClientFolder[] | null;
 
     return folders;
