@@ -12,7 +12,7 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `http://api.tetrips.co.kr/user/getUserInfo?email=${email}`,
+      `https://api.tetrips.co.kr/user/getUserInfo?email=${email}`,
       {
         method: 'GET',
         headers: {

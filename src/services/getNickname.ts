@@ -8,7 +8,7 @@ export const getNickname = async () => {
     return null
   }
   try {
-    const res = await fetch(`http://api.tetrips.co.kr/auth/getNickname`, {
+    const res = await fetch(`https://api.tetrips.co.kr/auth/getNickname`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

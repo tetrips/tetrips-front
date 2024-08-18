@@ -12,7 +12,7 @@ export const updateUserInfo = async (userInfo: {
     return null
   }
   try {
-    const res = await fetch(`http://api.tetrips.co.kr/user/updateUserInfo`, {
+    const res = await fetch(`https://api.tetrips.co.kr/user/updateUserInfo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -13,7 +13,7 @@ export const deleteUser = async () => {
   }
   try {
     const res = await fetch(
-      `http://api.tetrips.co.kr/user/deleteUser?email=${email}`,
+      `https://api.tetrips.co.kr/user/deleteUser?email=${email}`,
       {
         method: 'DELETE',
         headers: {

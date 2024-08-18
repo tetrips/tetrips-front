@@ -9,8 +9,8 @@
 //     const password = formData.get('password') as string;
 //     // console.log("보내는 데이터", email, password);
 //
-//     const res = await fetch(`http://api.tetrips.co.kr/auth/login/local`, {
-//     // const res = await fetch(`http://localhost:3000/test/login`, {
+//     const res = await fetch(`https://api.tetrips.co.kr/auth/login/local`, {
+//     // const res = await fetch(`https://localhost:3000/test/login`, {
 //       method: 'POST',
 //       headers: {
 //         'Content-Type': 'application/json',
