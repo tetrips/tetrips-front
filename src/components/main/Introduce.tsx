@@ -43,7 +43,7 @@ export default function Introduce() {
                     Documentation
                   </a>
                   <a
-                    href="#"
+                    href="https://github.com/tetrips"
                     className="text-sm font-semibold leading-6 text-gray-900"
                   >
                     View on GitHub <span aria-hidden="true">→</span>
