@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 export async function tokenRefresh() {
   if (!Cookies.get('accessToken')) {
     const refreshToken = Cookies.get('refreshToken')
-    console.log('tokenFetch 함수 : ' + refreshToken)
+    //console.log('tokenFetch 함수 : ' + refreshToken)
 
     try {
       const res = await fetch(`/api/cookie/return/refresh`, {
@@ -16,7 +16,7 @@ export async function tokenRefresh() {
       })
 
       if (res.ok) {
-        console.log('tokenFetch 함수 로그 :' + res)
+        //console.log('tokenFetch 함수 로그 :' + res)
       } else {
         console.error('Login failed')
       }

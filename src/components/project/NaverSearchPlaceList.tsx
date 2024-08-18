@@ -1,33 +1,35 @@
 'use client'
 import { useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { ClientPlace } from '@/types/Place';
+import { ClientPlace } from '@/types/Place'
 
 interface SearchResult {
-  status: string;
+  status: string
   meta: {
-    totalCount: number;
-    page: number;
-    count: number;
-  };
+    totalCount: number
+    page: number
+    count: number
+  }
   places: {
-    title: string;
-    roadAddress: string;
-    mapx: string;
-    mapy: string;
-    category: string;
-    link: string;
-  }[];
-  errorMessage?: string;
+    title: string
+    roadAddress: string
+    mapx: string
+    mapy: string
+    category: string
+    link: string
+  }[]
+  errorMessage?: string
 }
 
 interface NaverSearchListProps {
-  onPlaceSelect: (place: ClientPlace) => void;
+  onPlaceSelect: (place: ClientPlace) => void
 }
 
-export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
+export default function NaverSearchList({
+  onPlaceSelect,
+}: NaverSearchListProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [results, setResults] = useState<ClientPlace[]>([]);
+  const [results, setResults] = useState<ClientPlace[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,12 +39,14 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
     setError(null)
 
     try {
-      const response = await fetch(`/api/search?query=${encodeURIComponent(searchTerm)}`);
+      const response = await fetch(
+        `/api/search?query=${encodeURIComponent(searchTerm)}`,
+      )
       if (!response.ok) {
-        throw new Error('Search request failed');
+        throw new Error('Search request failed')
       }
 
-      const data: SearchResult = await response.json();
+      const data: SearchResult = await response.json()
 
       if (data.status === 'OK' && data.places && data.places.length > 0) {
         const destinations: ClientPlace[] = data.places.map((place) => ({
@@ -53,22 +57,22 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
           mapx: parseFloat(place.mapx),
           mapy: parseFloat(place.mapy),
           link: place.link,
-        }));
-        setResults(destinations);
-        console.log('Search results:', destinations);
+        }))
+        setResults(destinations)
+        //console.log('Search results:', destinations);
       } else {
-        setError(data.errorMessage || '검색 결과가 없습니다.');
+        setError(data.errorMessage || '검색 결과가 없습니다.')
       }
     } catch (err) {
-      setError('검색 중 오류가 발생했습니다.');
-      console.error('Search error:', err);
+      setError('검색 중 오류가 발생했습니다.')
+      console.error('Search error:', err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   const handleAddPlace = async (destination: ClientPlace) => {
-    console.log('Adding place:', destination);
+    //console.log('Adding place:', destination);
     try {
       const response = await fetch('/api/place', {
         method: 'POST',
@@ -76,17 +80,17 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(destination),
-      });
+      })
       if (!response.ok) {
-        throw new Error('Failed to add place');
+        throw new Error('Failed to add place')
       }
-      const data = await response.json();
-      console.log('Place added successfully:', data);
+      const data = await response.json()
+      //console.log('Place added successfully:', data);
     } catch (err) {
-      console.error('Add place error:', err);
+      console.error('Add place error:', err)
     }
-    onPlaceSelect(destination);
-  };
+    onPlaceSelect(destination)
+  }
 
   return (
     <div>
@@ -97,21 +101,24 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="장소 검색"
-            className="text-sm flex-grow border border-gray-300 rounded-l px-4 py-2"
+            className="flex-grow rounded-l border border-gray-300 px-4 py-2 text-sm"
           />
           <button
             type="submit"
-            className="bg-cyan-500 text-white text-sm px-4 py-2 rounded-r hover:bg-cyan-900"
+            className="rounded-r bg-cyan-500 px-4 py-2 text-sm text-white hover:bg-cyan-900"
             disabled={isLoading}
           >
             {isLoading ? '검색 중...' : '검색'}
           </button>
         </div>
       </form>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <ul className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      <ul className="max-h-[calc(100vh-200px)] space-y-2 overflow-y-auto">
         {results.map((result, index) => (
-          <li key={index} className="border p-2 rounded flex justify-between items-center">
+          <li
+            key={index}
+            className="flex items-center justify-between rounded border p-2"
+          >
             <div>
               <h3 className="font-semibold">{result.title}</h3>
               <p className="text-sm text-gray-600">{result.roadAddress}</p>
@@ -126,10 +133,10 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
               </a>
             </div>
             <button
-              className="bg-cyan-500 text-white p-2 rounded hover:bg-cyan-900"
+              className="rounded bg-cyan-500 p-2 text-white hover:bg-cyan-900"
               onClick={() => handleAddPlace(result)}
             >
-              <PlusIcon className='w-5' />
+              <PlusIcon className="w-5" />
             </button>
           </li>
         ))}
