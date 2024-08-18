@@ -26,7 +26,7 @@ export default function Login() {
     try {
       // const res = await fetch(`http://localhost:3000/test/login`, {
       // const res = await fetch(`/api/cookie/return/first`, {
-      const res = await fetch(`${process.env.API_BASE_URL}/auth/login/local`, {
+      const res = await fetch(`http://api.tetrips.co.kr/auth/login/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

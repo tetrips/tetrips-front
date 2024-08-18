@@ -13,7 +13,7 @@ export const deleteUser = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.API_BASE_URL}/user/deleteUser?email=${email}`,
+      `http://api.tetrips.co.kr/user/deleteUser?email=${email}`,
       {
         method: 'DELETE',
         credentials: 'include',

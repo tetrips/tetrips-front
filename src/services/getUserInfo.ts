@@ -11,7 +11,7 @@ export const getUserInfo = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.API_BASE_URL}/user/getUserInfo?email=${email}`,
+      `http://api.tetrips.co.kr/user/getUserInfo?email=${email}`,
       {
         method: 'GET',
         headers: {
