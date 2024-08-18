@@ -1,27 +1,86 @@
 const features = [
   {
-    name: 'Adventure-ready',
-    description:
-      'The Drawstring Canister is water and tear resistant with durable canvas construction. This bag holds up to the demands of daily use while keeping your snacks secure.',
-    imageSrc:
-      'https://tailwindui.com/img/ecommerce-images/product-feature-04-detail-03.jpg',
-    imageAlt: 'Printed photo of bag being tossed into the sky on top of grass.',
+    name: '001',
+    description: '1. 나만의 여행 계획 이름을 입력하세요.',
+    imageSrc: '/manual/001.jpg',
+    imageAlt: '여행 계획 설명 사진',
   },
   {
-    name: 'Minimal and clean',
+    name: '002',
     description:
-      "Everything you need, nothing you don't. This bag has the simple, contemporary design that enables you to tell everyone you know about how essentialism is the only rational way to live life.",
-    imageSrc:
-      'https://tailwindui.com/img/ecommerce-images/product-feature-04-detail-01.jpg',
-    imageAlt: 'Double stitched black canvas hook loop.',
+      '2. 날짜 선택 버튼을 눌러 여행 시작 날짜와 종료 날짜를 선택하세요.',
+    imageSrc: '/manual/002.jpg',
+    imageAlt: '여행 계획 설명 사진',
   },
   {
-    name: 'Organized',
+    name: '003',
     description:
-      'Never lose your snacks again with our patent-pending snack stash pocket system. With dedicated pouches for each of your snacking needs, the Drawstring Canister unlocks new levels of efficiency and convenience.',
-    imageSrc:
-      'https://tailwindui.com/img/ecommerce-images/product-feature-04-detail-02.jpg',
-    imageAlt: 'Black canvas body with chrome zipper and key ring.',
+      '3. 여행 계획 제목과 날짜를 모두 입력했다면 여행 계획 생성 버튼을 눌러 본격적으로 여행 계획을 시작하세요.',
+    imageSrc: '/manual/003.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '004',
+    description:
+      '4. 여행 계획 편집 중 초대 링크 복사 버튼을 눌러 링크를 공유하여, 언제든지 다른 사용자를 공동 편집자로 초대할 수 있습니다.\n' +
+      '5. 초대한 사용자들과 채팅을 통해 실시간으로 의견을 나눌 수 있습니다.\n' +
+      '6. 편집할 여행 일정 날짜를 선택하여 해당 날짜의 활동 시작 시간, 출발 지점, 종료 지점, 여행지 목록 등을 편집할 수 있습니다.',
+    imageSrc: '/manual/004.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '005',
+    description:
+      '7. 시계 아이콘을 클릭하여 활동 시작 시간을 편집할 수 있습니다.\n' +
+      '8. 출발 지점 선택 또는 도착 지점 선택을 클릭하거나, 장소 추가 버튼을 통해 추천장소 목록을 확인하여 여행지 장소를 추가하세요.',
+    imageSrc: '/manual/005.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '006',
+    description:
+      '8. 출발 지점 선택 또는 도착 지점 선택을 클릭하거나, 장소 추가 버튼을 통해 추천장소 목록을 확인하여 여행지 장소를 추가하세요.',
+    imageSrc: '/manual/006.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '007',
+    description:
+      '9. 추천 장소 목록에 원하는 장소가 없으면, 네이버 지도 검색을 통해 새로운 장소를 등록할 수 있습니다.',
+    imageSrc: '/manual/007.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '008',
+    description:
+      '10. 등록된 장소들을 일정별로 지도에서 마커로 확인하고, 마커를 클릭하여 해당 장소에 대한 간략한 정보를 확인하세요.',
+    imageSrc: '/manual/008.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '009',
+    description:
+      '11. 여행지 목록에 추가한 장소 중 특정 장소에 머무를 시간을 설정하거나 메모를 작성할 수 있습니다.\n' +
+      '12. 경로 최적화 버튼을 누르면 해당 일정의 최적화된 동선에 따라 여행지 순서와 지도 마커 순서가 자동으로 변경됩니다.\n' +
+      '13. 최적화 결과 확인 버튼을 통해 공동 편집자 모두가 경로 최적화 결과를 확인할 수 있습니다.',
+    imageSrc: '/manual/009.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '010',
+    description:
+      '14. 여행지 목록에서 특정 장소를 드래그하여 여행지 순서를 쉽게 조정할 수 있습니다.',
+    imageSrc: '/manual/010.jpg',
+    imageAlt: '여행 계획 설명 사진',
+  },
+  {
+    name: '011',
+    description:
+      '15. 편집 과정 중 언제든 저장 버튼을 눌러 여행 계획을 중간 저장하세요.\n' +
+      '16. 여행 계획 목록에서 View Project 버튼을 눌러 해당 여행 계획의 동선을 한눈에 파악하고, 이미지를 JPG 또는 PNG 파일로 저장할 수 있습니다.\n' +
+      '17. 여행 계획 목록에서 폴더를 생성하여 여행 계획을 폴더별로 구분할 수 있습니다.',
+    imageSrc: '/manual/011.jpg',
+    imageAlt: '여행 계획 설명 사진',
   },
 ]
 
