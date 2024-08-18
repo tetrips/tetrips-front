@@ -24,8 +24,6 @@ export async function POST(request: NextRequest) {
     }
     const username = usernameData.value;
     const extractedNickname = username.split('@')[0];
-    // const test = 'test1@naver.com';
-    // const extractedtest = test.split('@')[0];
     const itineraries: Itinerary[] = [];
 
     let currentDate = new Date(startDateUTC);
