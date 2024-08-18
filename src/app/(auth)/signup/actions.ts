@@ -11,7 +11,7 @@ export async function signupFetch(formData: FormData) {
     gender: formData.get('gender') ? 'true' : 'false',
     birthDate: formData.get('birth-date') as string,
   }
-  console.log(data)
+  //console.log(data)
   try {
     const res = await fetch(`https://api.tetrips.co.kr/auth/signup`, {
       method: 'POST',
@@ -20,9 +20,9 @@ export async function signupFetch(formData: FormData) {
       },
       body: JSON.stringify(data),
     })
-    console.log(res)
+    //console.log(res)
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     redi = false
   }
   if (redi) {

@@ -152,7 +152,7 @@ export default function Page() {
 
   const handleSaveAllClick = async () => {
     await updateUserInfo(formData)
-    console.log('All changes saved:', formData)
+    //console.log('All changes saved:', formData)
   }
 
   return (

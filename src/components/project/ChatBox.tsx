@@ -8,19 +8,19 @@ import SockJS from 'sockjs-client';
 import { generateColorFromEmail, getContrastColor } from '@/utils/userColor';
 
 interface Message {
-  nickname: string;
-  message: string;
-  userId: string;
-  prId: string;
-  chatTime: Date;
+  nickname: string
+  message: string
+  userId: string
+  prId: string
+  chatTime: Date
 }
 
 interface ClientMessage {
-  nickname: string;
-  message: string;
-  userId: string;
-  prId: string;
-  timestamp?: Date;
+  nickname: string
+  message: string
+  userId: string
+  prId: string
+  timestamp?: Date
 }
 
 export default function ChatBox({ project, userData }: { project: ClientProject, userData: Guest }) {
@@ -43,31 +43,31 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     try {
       const response = await fetch(`https://chat.tetrips.co.kr/api/messages/${projectId}`);
       if (!response.ok) {
-        throw new Error('메시지를 불러오지 못했습니다.');
+        throw new Error('메시지를 불러오지 못했습니다.')
       }
-      const data: Message[] = await response.json();
-      console.log('fetch messages data', data);
-      const clientData = data.map((msg) => { 
-        const originalUserId = msg.userId.replace('-', '@');
+      const data: Message[] = await response.json()
+      //console.log('fetch messages data', data);
+      const clientData = data.map((msg) => {
+        const originalUserId = msg.userId.replace('-', '@')
         return {
           nickname: msg.nickname,
           message: msg.message,
           userId: originalUserId,
           prId: msg.prId,
           timestamp: new Date(msg.chatTime),
-        };
-      });
-      setMessages(clientData);
+        }
+      })
+      setMessages(clientData)
     } catch (error) {
-      setError('메시지를 불러오는 중 오류가 발생했습니다.');
-      console.error('Error fetching messages:', error);
+      setError('메시지를 불러오는 중 오류가 발생했습니다.')
+      console.error('Error fetching messages:', error)
     }
-  }, [projectId]);
+  }, [projectId])
 
   const sendMessage = useCallback(async () => {
     if (!stompClientRef.current || !stompClientRef.current.connected) {
-      setError('WebSocket 연결이 활성화되지 않았습니다.');
-      return;
+      setError('WebSocket 연결이 활성화되지 않았습니다.')
+      return
     }
     if (input.trim()) {
       const newMessage = {
@@ -75,18 +75,16 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
         message: input.trim(),
         userId: chatUserId,
         prId: projectId,
-      };
+      }
 
       try {
-
-        stompClientRef.current.send("/app/send", {}, JSON.stringify(newMessage));
-        const originalUserId = newMessage.userId.replace('-', '@');
+        stompClientRef.current.send('/app/send', {}, JSON.stringify(newMessage))
+        const originalUserId = newMessage.userId.replace('-', '@')
         const transformMessage = {
           nickname: newMessage.nickname,
           message: newMessage.message,
           userId: originalUserId,
           prId: newMessage.prId,
-
         }
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -94,19 +92,19 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
             ...transformMessage,
             timestamp: new Date(),
           },
-        ]);
+        ])
 
-        setInput('');
+        setInput('')
       } catch (error) {
-        setError('메시지 전송 중 오류가 발생했습니다.');
-        console.error('Error sending message:', error);
+        setError('메시지 전송 중 오류가 발생했습니다.')
+        console.error('Error sending message:', error)
       }
     }
+
   }, [input, nickname, chatUserId, projectId]);
 
   useEffect(() => {
     fetchMessages();
-
     const socket = new SockJS("https://chat.tetrips.co.kr/chat");
     const stompClient = Stomp.over(socket);
 
@@ -142,9 +140,9 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
     }
-  }, [messages]);
+  }, [messages])
 
   const getUserColors = useCallback((email: string) => {
     const backgroundColor = generateColorFromEmail(email);
@@ -157,7 +155,10 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
     const { backgroundColor, textColor } = getUserColors(msgObj.userId);
 
     return (
-      <div key={`${index}-${msgObj.userId}`} className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}>
+      <div
+        key={`${index}-${msgObj.userId}`}
+        className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}
+      >
         {msgObj.userId !== userId && (
           <div className="flex flex-col items-center mr-2">
             <div 
@@ -168,18 +169,16 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
             </div>
           </div>
         )}
-        <div className={`${noto.className} flex flex-col font-bold space-y-1 text-xs max-w-xs`}>
+        <div
+          className={`${noto.className} flex max-w-xs flex-col space-y-1 text-xs font-bold`}
+        >
           {msgObj.userId !== userId && (
-            <div className="text-gray-600">
-              {msgObj.nickname}
-            </div>
+            <div className="text-gray-600">{msgObj.nickname}</div>
           )}
           <div className={`${noto.className} px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-sky-300 text-white' : 'bg-gray-100 text-gray-800'}`}>
             {msgObj.message}
           </div>
-          <div className="text-gray-500 mt-1">
-            {messageTime}
-          </div>
+          <div className="mt-1 text-gray-500">{messageTime}</div>
         </div>
         {msgObj.userId === userId && (
           <div className="flex flex-col items-center ml-2">
@@ -192,8 +191,8 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
           </div>
         )}
       </div>
-    );
-  });
+    )
+  })
 
   return (
     <div className="bg-white flex flex-col w-full h-full relative">
@@ -218,11 +217,11 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
               className="p-2 bg-cyan-500 text-white rounded w-8 h-8 flex items-center justify-center"
               onClick={sendMessage}
             >
-              <PlusIcon className="w-6 h-6" />
+              <PlusIcon className="h-6 w-6" />
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
