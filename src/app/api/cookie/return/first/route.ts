@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json()
 
-  const res = await fetch(`http://api.tetrips.co.kr/auth/login/local`, {
+  const res = await fetch(`https://api.tetrips.co.kr/auth/login/local`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     statusText: res.statusText,
     headers: res.headers,
   })
-  console.log(toReturn)
+  //console.log(toReturn)
   // 백엔드로부터 받은 응답을 그대로 리턴
   return toReturn
 }
