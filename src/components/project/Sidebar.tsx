@@ -1,74 +1,108 @@
 'use client'
-import { ClientFolder } from '@/types/Folder'
-import { ClientProject } from '@/types/Project'
+import { createFolder, deleteFolder, updateFolder } from '@/services/folderAction';
+import { ClientFolder } from '@/types/Folder';
 import { useState } from 'react';
-import DeleteFolder from './DeleteFolder';
-import ProjectList from './ProjectList';
-import { createFolder } from '@/services/folderAction';
-import { useFormState } from 'react-dom';
-import { FolderIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import { MinusIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 
+interface SidebarProps {
+  folders: ClientFolder[] | null;
+  onFolderSelect: (folderId: string | null) => void;
+}
 
-export default function Sidebar({ projects,folders }: { projects: ClientProject[] | null, folders:ClientFolder[]| null}) {
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-  const initialState = { message: '', errors: {} };
-  const [state, formAction] = useFormState(createFolder, initialState);
-  
+export default function Sidebar({ folders, onFolderSelect }: SidebarProps) {
+  const [newFolderName, setNewFolderName] = useState('');
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleCreateFolder = async () => {
+    if (newFolderName.trim()) {
+      try {
+        await createFolder(newFolderName.trim());
+        setNewFolderName('');
+        router.refresh();
+      } catch (error) {
+        console.error('Failed to create folder:', error);
+      }
+    }
+  };
+
+  const handleUpdateFolder = async (folderId: string, newName: string) => {
+    try {
+      await updateFolder(folderId, newName);
+      setEditingFolderId(null);
+      router.refresh();
+    } catch (error) {
+      console.error('Failed to update folder:', error);
+    }
+  };
+
+  const handleDeleteFolder = async (folderId: string) => {
+    try {
+      await deleteFolder(folderId);
+      router.refresh();
+    } catch (error) {
+      console.error('Failed to delete folder:', error);
+    }
+  };
+
   return (
-    <div className="flex h-full">
-      <div className="w-64 bg-white border-r border-gray-200 overflow-y-auto no-scrollbar">
-        <div className="p-4">
-          <form action={formAction} className="mb-4">
-            <div className="flex items-center">
+    <div className="w-40 md:w-64 h-full p-2 flex flex-col">
+      <div className="flex flex-col sm:flex-row items-center sm:space-x-2 py-4 border-b border-dashed border-gray-400">
+        <input
+          type="text"
+          value={newFolderName}
+          onChange={(e) => setNewFolderName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded text-xs mb-2 sm:mb-0 truncate"
+          placeholder="New folder name"
+        />
+        <button
+          onClick={handleCreateFolder}
+          className="w-full sm:w-auto bg-cyan-500 text-white p-2 rounded text-xs md:text-sm"
+        >
+          <PlusIcon className="w-5 h-5 m-auto" />
+        </button>
+      </div>
+      <ul className="flex-grow overflow-y-auto no-scrollbar pt-4 w-full">
+        <li
+          className="cursor-pointer hover:bg-gray-200 p-4 rounded text-xs md:text-sm"
+          onClick={() => onFolderSelect(null)}
+        >
+          All Projects
+        </li>
+        {folders && folders.map((folder) => (
+          <li key={folder.id} className="flex items-center justify-between my-2 text-xs md:text-sm w-full">
+            {editingFolderId === folder.id ? (
               <input
-                id='name'
-                name='name'
-                type='text'
-                placeholder='New folder name'
-                className='flex-grow p-2 text-sm border-b border-gray-300 focus:outline-none focus:border-cyan-500'
+                type="text"
+                defaultValue={folder.name}
+                onBlur={(e) => handleUpdateFolder(folder.id, e.target.value)}
+                className="w-14 md:w-36 p-1 border rounded truncate text-xs md:text-sm"
               />
-              <button type="submit" className="flex p-2 text-cyan-600">
-                <PlusIcon className="h-5 w-5" />
+            ) : (
+              <span
+                className="cursor-pointer hover:bg-gray-200 p-2 rounded flex-grow truncate"
+                onClick={() => onFolderSelect(folder.id)}
+              >
+                {folder.name}
+              </span>
+            )}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setEditingFolderId(folder.id)}
+              >
+                <PencilIcon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleDeleteFolder(folder.id)}
+                className="text-red-500"
+              >
+                <MinusIcon className="w-4 h-4" />
               </button>
             </div>
-          </form>
-          <nav>
-            <ul className="space-y-1">
-              <li>
-                <button
-                  onClick={() => setSelectedFolderId(null)}
-                  className={`w-full text-left px-4 py-2 rounded-md text-sm font-medium ${
-                    !selectedFolderId ? 'bg-cyan-500 text-white' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  All Projects
-                </button>
-              </li>
-              {folders && folders.map((folder) => (
-                <li key={folder.id}>
-                  <div className="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-gray-100">
-                    <button 
-                      onClick={() => setSelectedFolderId(folder.id)}
-                      className={`flex items-center flex-grow text-sm font-medium ${
-                        selectedFolderId === folder.id ? 'text-cyan-500' : 'text-gray-700'
-                      }`}
-                    >
-                      <FolderIcon className={`h-4 w-4 mr-2 ${
-                        selectedFolderId === folder.id ? 'text-cyan-500' : 'text-gray-400'
-                      }`} />
-                      {folder.name}
-                    </button>
-                    <DeleteFolder folderId={folder.id} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </div>
-      <div className="flex-grow">
-        <ProjectList projects={projects} folderId={selectedFolderId} folders={folders}/>
-      </div>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }

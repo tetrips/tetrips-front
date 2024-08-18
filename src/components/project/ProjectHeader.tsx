@@ -3,18 +3,15 @@
 import { useYjs } from "@/hooks/useYjs";
 import { ClientProject, Guest } from "@/types/Project";
 import { noto } from "../common/fonts";
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useYjsGuests } from "@/hooks/useYjsGuests";
+import { generateColorFromEmail, getContrastColor } from "@/utils/userColor";
 
-export default function ProjectHeader({project}:{project:ClientProject}) {
+export default function ProjectHeader({project,userData}:{project:ClientProject,userData:Guest}) {
   const {updateProject,isSaving } = useYjs({project});
-  const [guests, setGuests] = useState<Guest[]>(project.guests);
-  useEffect(() => {
-    setGuests(project.guests);
-  }, [project.guests]);
-  
-  const colors = ['bg-[#ff8d8d]', 'bg-[#ffb785]', 'bg-[#fdff96]', 'bg-[#8eff9f]', 'bg-[#5ff6ff]', 'bg-[#60a4ff]', 'bg-[#9d8bff]', 'bg-[#ff86ff]', 'bg-[#fa8351]', 'bg-[#f59d77]', 'bg-[#dccb88]', 'bg-[#c5d39a]', 'bg-[#2ddbad]', 'bg-[#5073f1]', 'bg-[#9a58eb]', 'bg-[#d14b58]'];
+  const {guests} = useYjsGuests(project.id,userData)
 
   const handleInvite = () => {
     navigator.clipboard.writeText(`${window.location.origin}/project/${project.id}`);
@@ -30,6 +27,12 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
     }
   };
 
+  const getUserColors = useCallback((email: string) => {
+    const backgroundColor = generateColorFromEmail(email);
+    const textColor = getContrastColor(backgroundColor);
+    return { backgroundColor, textColor };
+  }, []);
+
   
   return (
     <header className="bg-white border-b py-1 px-4">
@@ -39,17 +42,21 @@ export default function ProjectHeader({project}:{project:ClientProject}) {
         </Link>
         <h1 className={`${noto.className} sm:text-sm text-xs truncate max-w-[50%] ml-4`}>{project.title}</h1>
         <div className="flex items-center space-x-6 ml-auto">
-          {guests.map((user, index) => (
-            <div
-              key={index}
-              className={`flex flex-col items-center justify-center w-9 h-9 rounded-full text-white ${colors[index % colors.length]}`}
-            >
-              {user.nickname?.[0]}
-            </div>
-          ))}
+          {guests.map((user) => {
+            const { backgroundColor, textColor } = getUserColors(user.email);
+            return (
+              <div
+                key={user.email}
+                className="flex flex-col items-center justify-center w-10 h-10 rounded-full"
+                style={{ backgroundColor, color: textColor }}
+              >
+                {user.nickname?.[0]}
+              </div>
+            );
+          })}
           <button
             onClick={handleInvite}
-            className="mx-1 text-cyan-500 border border-cyan-500 text-xs sm:text-xs px-5 py-2 rounded-2xl"
+            className="bg-cyan-500 text-white mx-1 text-xs sm:text-xs px-5 py-2 rounded-2xl"
           >
             초대 링크 복사
           </button>

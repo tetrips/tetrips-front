@@ -101,7 +101,7 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
           />
           <button
             type="submit"
-            className="bg-cyan-500 text-white text-sm px-4 py-2 rounded-r hover:bg-color7"
+            className="bg-cyan-500 text-white text-sm px-4 py-2 rounded-r hover:bg-cyan-900"
             disabled={isLoading}
           >
             {isLoading ? '검색 중...' : '검색'}
@@ -126,7 +126,7 @@ export default function NaverSearchList({onPlaceSelect}: NaverSearchListProps) {
               </a>
             </div>
             <button
-              className="bg-cyan-500 text-white p-2 rounded hover:bg-color7"
+              className="bg-cyan-500 text-white p-2 rounded hover:bg-cyan-900"
               onClick={() => handleAddPlace(result)}
             >
               <PlusIcon className='w-5' />
