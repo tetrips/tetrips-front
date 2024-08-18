@@ -41,7 +41,7 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
       return;
     }
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_URL}/api/messages/${projectId}`);
+      const response = await fetch(`http://chat.tetrips.co.kr/api/messages/${projectId}`);
       if (!response.ok) {
         throw new Error('메시지를 불러오지 못했습니다.');
       }
@@ -107,7 +107,7 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
   useEffect(() => {
     fetchMessages();
 
-    const socket = new SockJS(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat`);
+    const socket = new SockJS(`http://chat.tetrips.co.kr/chat`);
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
