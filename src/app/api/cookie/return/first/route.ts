@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     statusText: res.statusText,
     headers: res.headers,
   })
-  console.log(toReturn)
+  //console.log(toReturn)
   // 백엔드로부터 받은 응답을 그대로 리턴
   return toReturn
 }

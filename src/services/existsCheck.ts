@@ -3,7 +3,7 @@ export async function existsEmailCheck(email: string) {
     `https://api.tetrips.co.kr/user/exists-email?email=${email}`,
     {},
   )
-  console.log(response)
+  //console.log(response)
   if (response.status === 409) {
     return 'fail'
   } else if (response.status === 200) {
@@ -22,7 +22,7 @@ export async function existsNicknameCheck(nickname: string) {
     `https://api.tetrips.co.kr/user/exists-nickname?nickname=${encodedNickname}`,
     {},
   )
-  console.log(response)
+  //console.log(response)
   if (response.status === 409) {
     return 'fail'
   } else if (response.status === 200) {
