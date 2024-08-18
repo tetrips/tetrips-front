@@ -1,12 +1,18 @@
 import CreateProjectForm from '@/components/project/CreateProjectForm';
 import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Create Project',
 };
 
 export default async function Page() {
+  const usernameData = cookies().get('username');
+  if (!usernameData) {
+    redirect('/login');
+  }
   return (
     <div className="flex h-screen overflow-hidden">
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">

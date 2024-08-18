@@ -6,9 +6,9 @@ export function CreateProject() {
   return (
     <Link
       href="/project/create"
-      className="flex h-10 w-36 items-center rounded-lg bg-cyan-500 px-4 text-sm font-medium text-white transition-colors hover:bg-color6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      className="flex h-10 w-36 items-center rounded-lg bg-cyan-500 px-4 text-sm font-medium text-white transition-colors hover:bg-cyan-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Project</span>{' '}
+      <span>Create Project</span>{' '}
     </Link>
   );
 }

@@ -18,7 +18,7 @@ export default function  OptimizedRoute ({ route,onClick }: OptimizedRouteProps)
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-semibold text-gray-800 text-sm">동선 최적화 결과</h2>
           <button 
-            className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 text-sm"
+            className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-900 text-sm"
             onClick={onClick}
           >
             닫기
@@ -35,10 +35,10 @@ export default function  OptimizedRoute ({ route,onClick }: OptimizedRouteProps)
               </div>
               <div className="flex space-x-12 text-xs text-gray-600">
                 <div>
-                  <p>도착 : {formatDateTime(destination.startTime ?? '')}</p>
+                  <p>현재 장소에 도착 : {formatDateTime(destination.startTime ?? '')}</p>
                 </div>
                 <div>
-                  <p>출발: {formatDateTime(destination.endTime ?? '')}</p>
+                  <p>다음 장소로 출발 : {formatDateTime(destination.endTime ?? '')}</p>
                 </div>
               </div>
               <p className="text-xs text-gray-500">{destination.roadAddress}</p>
