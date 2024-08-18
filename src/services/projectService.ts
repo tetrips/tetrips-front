@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
 import clientPromise from '@/libs/mongodb';
 import { ClientProject, Guest, Project } from '@/types/Project';
-import { unstable_noStore } from "next/cache";
-import { redirect } from "next/navigation";
+import { revalidatePath, unstable_noStore } from "next/cache";
 
 async function getCollection(collectionName: string) {
   const client = await clientPromise;
@@ -34,7 +33,6 @@ export async function fetchProjectsByUserId(username: string): Promise<ClientPro
       createdAt: project.createdAt.toISOString().split('T')[0],
       guests: project.guests,
       itineraries: project.itineraries,
-      folderId: project.folderId ? project.folderId.toString() : null,
     })) as ClientProject[] | null;
 
     return projects;
@@ -68,19 +66,19 @@ export async function fetchProjectById(projectId:string):Promise<ClientProject> 
   }
 }
 
-export async function inviteGuest(projectId: string, email: string, nickname: string, img: string) {
+export async function inviteGuest(projectId: string, email: string, nickname: string) {
   if (!ObjectId.isValid(projectId)) {
     throw new Error('유효하지 않은 프로젝트 ID입니다.');
   }
   try {
     const projectCollection = await getCollection('projects');
-    const guest: Guest = { email, nickname, img };
+    const guest: Guest = { email, nickname };
 
     const result = await projectCollection.updateOne(
       { _id: new ObjectId(projectId), 'guests.email': { $ne: email } },
       { $addToSet: { guests: guest } }
     );
-    redirect(`/project/${projectId}`);
+    revalidatePath(`/project/${projectId}`);
   } catch (error) {
     console.error('초대 처리 중 오류 발생:', error);
     throw error; 

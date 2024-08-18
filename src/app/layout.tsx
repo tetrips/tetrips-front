@@ -1,8 +1,6 @@
 import { type Metadata } from 'next'
 import { GeistSans } from "geist/font/sans";
 import '@/styles/globals.css'
-import { cookies } from 'next/headers'
-import Header from '@/components/common/Header'
 import Script from 'next/script';
 
 export const metadata: Metadata = {
