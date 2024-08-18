@@ -30,6 +30,7 @@ export const deleteUser = async () => {
       window.location.reload()
       return data
     } else {
+      alert('백엔드 에러')
       console.log('status가 200이 아닙니다.')
     }
   } catch (error) {
