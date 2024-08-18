@@ -26,7 +26,6 @@ interface ClientMessage {
 export default function ChatBox({ project, userData }: { project: ClientProject, userData: Guest }) {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ClientMessage[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const stompClientRef = useRef<any>(null);
   const projectId = project.id;
@@ -35,18 +34,13 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
   const nickname = userData.nickname;
 
   const fetchMessages = useCallback(async () => {
-    if (!process.env.NEXT_PUBLIC_CHAT_URL) {
-      console.error('NEXT_PUBLIC_CHAT_URL is not defined');
-      setError('서버 설정 오류가 발생했습니다.');
-      return;
-    }
     try {
       const response = await fetch(`https://chat.tetrips.co.kr/api/messages/${projectId}`);
       if (!response.ok) {
         throw new Error('메시지를 불러오지 못했습니다.')
       }
       const data: Message[] = await response.json()
-      //console.log('fetch messages data', data);
+
       const clientData = data.map((msg) => {
         const originalUserId = msg.userId.replace('-', '@')
         return {
@@ -59,14 +53,12 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
       })
       setMessages(clientData)
     } catch (error) {
-      setError('메시지를 불러오는 중 오류가 발생했습니다.')
       console.error('Error fetching messages:', error)
     }
   }, [projectId])
 
   const sendMessage = useCallback(async () => {
     if (!stompClientRef.current || !stompClientRef.current.connected) {
-      setError('WebSocket 연결이 활성화되지 않았습니다.')
       return
     }
     if (input.trim()) {
@@ -96,7 +88,6 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
         setInput('')
       } catch (error) {
-        setError('메시지 전송 중 오류가 발생했습니다.')
         console.error('Error sending message:', error)
       }
     }
@@ -126,7 +117,6 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
       });
     }, (error: any) => {
       console.error('WebSocket error:', error);
-      setError('WebSocket 오류가 발생했습니다.');
     });
 
     stompClientRef.current = stompClient;
