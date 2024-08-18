@@ -5,7 +5,7 @@ export const updatePassword = async (
   lastPassword: string,
   newPassword: string,
 ) => {
-  const email = Cookies.get('email')
+  const email = Cookies.get('username')
   const token = await getAccessToken()
   if (!token) {
     console.log(token)
@@ -15,7 +15,7 @@ export const updatePassword = async (
   }
   try {
     const res = await fetch(`https://api.tetrips.co.kr/auth/updatePassword`, {
-      method: 'Post',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
