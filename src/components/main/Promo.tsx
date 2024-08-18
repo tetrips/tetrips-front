@@ -87,7 +87,7 @@ export default function Promo() {
           {collections.map((collection) => (
             <div
               key={collection.name}
-              className="sm:aspect-h-5 sm:aspect-w-4 group relative h-96 rounded-lg bg-white shadow-xl sm:h-auto"
+              className="group relative h-96 rounded-lg bg-white shadow-xl sm:aspect-h-5 sm:aspect-w-4 sm:h-auto"
             >
               <div>
                 <div
@@ -106,7 +106,7 @@ export default function Promo() {
                 <div className="absolute inset-0 flex items-end rounded-lg p-6">
                   <div>
                     <p aria-hidden="true" className="text-sm text-white">
-                      Shop the collection
+                      예시 프로젝트
                     </p>
                     <h3 className="mt-1 font-semibold text-white">
                       <a href={collection.href}>
