@@ -3,7 +3,7 @@ import { createFolder, deleteFolder, updateFolder } from '@/services/folderActio
 import { ClientFolder } from '@/types/Folder';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MinusIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { FolderIcon, MinusIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
   folders: ClientFolder[] | null;
@@ -81,9 +81,10 @@ export default function Sidebar({ folders, onFolderSelect }: SidebarProps) {
               />
             ) : (
               <span
-                className="cursor-pointer hover:bg-gray-200 p-2 rounded flex-grow truncate"
+                className="flex cursor-pointer hover:bg-gray-200 p-2 rounded flex-grow truncate"
                 onClick={() => onFolderSelect(folder.id)}
               >
+                <FolderIcon className="h-4 w-4 mr-2 text-gray-400" />
                 {folder.name}
               </span>
             )}
