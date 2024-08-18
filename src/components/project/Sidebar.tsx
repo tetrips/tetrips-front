@@ -1,64 +1,74 @@
-import Link from 'next/link'
+'use client'
+import { ClientFolder } from '@/types/Folder'
+import { ClientProject } from '@/types/Project'
+import { useState } from 'react';
+import DeleteFolder from './DeleteFolder';
+import ProjectList from './ProjectList';
+import { createFolder } from '@/services/folderAction';
+import { useFormState } from 'react-dom';
+import { FolderIcon, PlusIcon } from '@heroicons/react/24/outline';
 
-const teams = [
-  { id: 1, name: '친구들', href: '#', initial: 'H', current: false },
-  { id: 2, name: '가족', href: '#', initial: 'T', current: false },
-  { id: 3, name: '학교', href: '#', initial: 'W', current: false },
-]
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Sidebar() {
+export default function Sidebar({ projects,folders }: { projects: ClientProject[] | null, folders:ClientFolder[]| null}) {
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const initialState = { message: '', errors: {} };
+  const [state, formAction] = useFormState(createFolder, initialState);
+  
   return (
-    <div className="flex min-w-60 grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-20">
-      <div className="flex shrink-0 items-center">
-        <Link href="/">
-          <img
-            className="h-8 w-auto"
-            src="/icons/tetrips-logo.png"
-            alt="Your Company"
-          />
-        </Link>
-      </div>
-      <nav className="flex flex-1 flex-col">
-        <ul role="list" className="flex flex-1 flex-col gap-y-7">
-          <li>
-            <div className="text-xs font-semibold leading-6 text-gray-400">
-              Your teams
+    <div className="flex h-full">
+      <div className="w-64 bg-white border-r border-gray-200 overflow-y-auto no-scrollbar">
+        <div className="p-4">
+          <form action={formAction} className="mb-4">
+            <div className="flex items-center">
+              <input
+                id='name'
+                name='name'
+                type='text'
+                placeholder='New folder name'
+                className='flex-grow p-2 text-sm border-b border-gray-300 focus:outline-none focus:border-cyan-500'
+              />
+              <button type="submit" className="flex p-2 text-cyan-600">
+                <PlusIcon className="h-5 w-5" />
+              </button>
             </div>
-            <ul role="list" className="-mx-2 mt-2 space-y-1">
-              {teams.map((team) => (
-                <li key={team.name}>
-                  <a
-                    href={team.href}
-                    className={classNames(
-                      team.current
-                        ? 'bg-gray-50 text-indigo-600'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
-                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
-                    )}
-                  >
-                    <span
-                      className={classNames(
-                        team.current
-                          ? 'border-indigo-600 text-indigo-600'
-                          : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
-                        'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
-                      )}
+          </form>
+          <nav>
+            <ul className="space-y-1">
+              <li>
+                <button
+                  onClick={() => setSelectedFolderId(null)}
+                  className={`w-full text-left px-4 py-2 rounded-md text-sm font-medium ${
+                    !selectedFolderId ? 'bg-cyan-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  All Projects
+                </button>
+              </li>
+              {folders && folders.map((folder) => (
+                <li key={folder.id}>
+                  <div className="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-gray-100">
+                    <button 
+                      onClick={() => setSelectedFolderId(folder.id)}
+                      className={`flex items-center flex-grow text-sm font-medium ${
+                        selectedFolderId === folder.id ? 'text-cyan-500' : 'text-gray-700'
+                      }`}
                     >
-                      {team.initial}
-                    </span>
-                    <span className="truncate">{team.name}</span>
-                  </a>
+                      <FolderIcon className={`h-4 w-4 mr-2 ${
+                        selectedFolderId === folder.id ? 'text-cyan-500' : 'text-gray-400'
+                      }`} />
+                      {folder.name}
+                    </button>
+                    <DeleteFolder folderId={folder.id} />
+                  </div>
                 </li>
               ))}
             </ul>
-          </li>
-          <li className="-mx-6 mt-auto"></li>
-        </ul>
-      </nav>
+          </nav>
+        </div>
+      </div>
+      <div className="flex-grow">
+        <ProjectList projects={projects} folderId={selectedFolderId} folders={folders}/>
+      </div>
     </div>
   )
 }

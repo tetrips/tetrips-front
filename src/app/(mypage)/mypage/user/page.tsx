@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogPanel, Field, Label, Switch } from '@headlessui/react'
 import {
   BellIcon,
@@ -11,6 +11,11 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import { getUserInfo } from '@/services/getUserInfo'
+import { updateUserInfo } from '@/services/updateUserInfo'
+import { existsNicknameCheck } from '@/services/existsCheck'
+import { redirect } from 'next/navigation'
+
 const secondaryNavigation = [
   {
     name: '개인 정보',
@@ -35,37 +40,118 @@ const secondaryNavigation = [
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
-type EditModeKey = 'nickname' | 'email' | 'birthdate';
+type EditModeKey = 'nickname' | 'email' | 'birthDate'
 
 export default function Page() {
+  const [userInfo, setUserInfo] = useState<{
+    nickname: string
+    email: string
+    birthDate: string
+  } | null>(null)
+  const [isNicknameChecked, setIsNicknameChecked] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [editMode, setEditMode] = useState<Record<EditModeKey, boolean>>({
     nickname: false,
     email: false,
-    birthdate: false,
+    birthDate: false,
   })
   const [formData, setFormData] = useState({
-    nickname: '김동은',
-    email: 'test@test.com',
-    birthdate: '1998-04-16',
+    nickname: '',
+    email: '',
+    birthDate: '',
   })
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await getUserInfo()
+      if (userInfo) {
+        setUserInfo(userInfo)
+        setFormData({
+          nickname: userInfo.nickname,
+          email: userInfo.email,
+          birthDate: userInfo.birthDate,
+        })
+      }
+    }
+    fetchUserInfo()
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-
   const handleEditClick = (field: EditModeKey) => {
-    setEditMode((prevMode) => ({ ...prevMode, [field]: !prevMode[field] }))
+    setEditMode((prevMode) => {
+      const newMode = { ...prevMode, [field]: !prevMode[field] }
+      setIsUpdating(Object.values(newMode).some((mode) => mode))
+      return newMode
+    })
   }
 
   const handleSaveClick = (field: EditModeKey) => {
-    // Save changes logic here
-    setEditMode((prevMode) => ({ ...prevMode, [field]: false }))
+    setEditMode((prevMode) => {
+      const newMode = { ...prevMode, [field]: false }
+      setIsUpdating(Object.values(newMode).some((mode) => mode))
+      return newMode
+    })
+    if (field === 'nickname') {
+      setIsNicknameChecked(false)
+    }
   }
 
-  const handleSaveAllClick = () => {
-    // Save all changes logic here
+  const validateNickname = (nickname: string) => {
+    const re = /^[a-zA-Z가-힣0-9]+$/
+    return re.test(nickname)
+  }
+
+  const handleNicknameCheck = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    const form = event.currentTarget.closest('form')
+    if (form) {
+      const formData = new FormData(form)
+      const nickname = formData.get('nickname') as string
+
+      if (!validateNickname(nickname)) {
+        alert('닉네임은 영어와 한글만 포함할 수 있습니다.')
+        return
+      }
+
+      let result = await existsNicknameCheck(nickname)
+      if (result === 'success') {
+        alert('사용 가능한 닉네임 입니다.')
+        setIsNicknameChecked(true)
+      } else if (result === 'fail') {
+        alert('이미 사용중인 닉네임입니다.')
+        setIsNicknameChecked(false)
+      } else if (result === 'not-supported') {
+        alert('지원하지 않는 언어입니다.')
+        setIsNicknameChecked(false)
+      } else {
+        redirect('/error/back')
+      }
+    }
+  }
+
+  const handleCancelClick = () => {
+    if (userInfo) {
+      setEditMode({
+        nickname: false,
+        email: false,
+        birthDate: false,
+      })
+      setFormData({
+        nickname: userInfo.nickname,
+        email: userInfo.email,
+        birthDate: userInfo.birthDate,
+      })
+      setIsUpdating(false)
+    }
+  }
+
+  const handleSaveAllClick = async () => {
+    await updateUserInfo(formData)
     console.log('All changes saved:', formData)
   }
 
@@ -118,83 +204,115 @@ export default function Page() {
                 Update 버튼을 눌러 수정할 수 있습니다.
               </p>
 
-              <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    닉네임
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    {editMode.nickname ? (
-                      <input
-                        type="text"
-                        name="nickname"
-                        value={formData.nickname}
-                        onChange={handleInputChange}
-                        className="text-gray-900"
-                      />
-                    ) : (
-                      <div className="text-gray-900">{formData.nickname}</div>
+              <form>
+                <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      닉네임
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      {editMode.nickname ? (
+                        <>
+                          <input
+                            type="text"
+                            name="nickname"
+                            value={formData.nickname}
+                            onChange={handleInputChange}
+                            className="text-gray-900"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleNicknameCheck}
+                            className={classNames(
+                              'min-w-[8rem] rounded-md p-2',
+                              isNicknameChecked ? 'bg-cyan-500' : 'bg-gray-200',
+                            )}
+                          >
+                            중복 체크
+                          </button>
+                        </>
+                      ) : (
+                        <div className="text-gray-900">{formData.nickname}</div>
+                      )}
+                      <button
+                        type="button"
+                        className="font-semibold text-cyan-500 hover:text-indigo-500"
+                        onClick={() =>
+                          editMode.nickname
+                            ? handleSaveClick('nickname')
+                            : handleEditClick('nickname')
+                        }
+                        disabled={editMode.nickname && !isNicknameChecked}
+                      >
+                        {editMode.nickname ? 'Save' : 'Update'}
+                      </button>
+                      {editMode.nickname && !isNicknameChecked && (
+                        <button
+                          type="button"
+                          className="font-semibold text-red-500 hover:text-red-700"
+                          onClick={handleCancelClick}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </dd>
+                  </div>
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      이메일
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      <div className="text-gray-900">{formData.email}</div>
+                    </dd>
+                  </div>
+                  <div className="pt-6 sm:flex">
+                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                      생년월일
+                    </dt>
+                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
+                      {editMode.birthDate ? (
+                        <input
+                          type="date"
+                          name="birthDate"
+                          value={formData.birthDate}
+                          onChange={handleInputChange}
+                          className="text-gray-900"
+                        />
+                      ) : (
+                        <div className="text-gray-900">
+                          {formData.birthDate}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        className="font-semibold text-cyan-500 hover:text-indigo-500"
+                        onClick={() =>
+                          editMode.birthDate
+                            ? handleSaveClick('birthDate')
+                            : handleEditClick('birthDate')
+                        }
+                      >
+                        {editMode.birthDate ? 'Save' : 'Update'}
+                      </button>
+                    </dd>
+                  </div>
+                </dl>
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    className={classNames(
+                      'mt-10 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+                      isUpdating
+                        ? 'bg-gray-200'
+                        : 'bg-cyan-500 hover:bg-indigo-500',
                     )}
-                    <button
-                      type="button"
-                      className="font-semibold text-cyan-500 hover:text-indigo-500"
-                      onClick={() =>
-                        editMode.nickname
-                          ? handleSaveClick('nickname')
-                          : handleEditClick('nickname')
-                      }
-                    >
-                      {editMode.nickname ? 'Save' : 'Update'}
-                    </button>
-                  </dd>
+                    onClick={handleSaveAllClick}
+                    disabled={isUpdating}
+                  >
+                    저장하기
+                  </button>
                 </div>
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    이메일
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">{formData.email}</div>
-                  </dd>
-                </div>
-                <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    생년월일
-                  </dt>
-                  <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    {editMode.birthdate ? (
-                      <input
-                        type="date"
-                        name="birthdate"
-                        value={formData.birthdate}
-                        onChange={handleInputChange}
-                        className="text-gray-900"
-                      />
-                    ) : (
-                      <div className="text-gray-900">{formData.birthdate}</div>
-                    )}
-                    <button
-                      type="button"
-                      className="font-semibold text-cyan-500 hover:text-indigo-500"
-                      onClick={() =>
-                        editMode.birthdate
-                          ? handleSaveClick('birthdate')
-                          : handleEditClick('birthdate')
-                      }
-                    >
-                      {editMode.birthdate ? 'Save' : 'Update'}
-                    </button>
-                  </dd>
-                </div>
-              </dl>
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="mt-10 rounded-md bg-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  onClick={handleSaveAllClick}
-                >
-                  저장하기
-                </button>
-              </div>
+              </form>
             </div>
           </div>
         </main>

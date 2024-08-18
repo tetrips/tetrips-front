@@ -13,10 +13,9 @@ export const deleteUser = async () => {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/deleteUser?email=${email}`,
+      `https://api.tetrips.co.kr/user/deleteUser?email=${email}`,
       {
         method: 'DELETE',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
@@ -31,6 +30,7 @@ export const deleteUser = async () => {
       window.location.reload()
       return data
     } else {
+      alert('백엔드 에러')
       console.log('status가 200이 아닙니다.')
     }
   } catch (error) {

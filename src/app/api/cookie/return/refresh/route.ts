@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   const { refreshToken } = await request.json()
   console.log('refresh/route.ts 에서 보내는 토큰입니다.' + refreshToken)
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+  const res = await fetch(`https://api.tetrips.co.kr/auth/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

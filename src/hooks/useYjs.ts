@@ -11,6 +11,8 @@ interface MarkerData {
   buildingName: string;
   category: string;
   link?: string;
+  date: string;
+  dayIndex: number;
 }
 
 interface Destination {
@@ -94,6 +96,7 @@ export function useYjs({ project }: { project: ClientProject }) {
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [optimizedRoutes, setOptimizedRoutes] = useState<{ [key: string]: Destination[] }>({});
 
 
   const updateLocalState = useCallback((doc: Y.Doc) => {
@@ -114,19 +117,27 @@ export function useYjs({ project }: { project: ClientProject }) {
     });
 
     setItineraries(updatedItineraries);
+
+    const yOptimizedRoutes = doc.getMap<Y.Array<any>>('optimizedRoutes');
+    const newOptimizedRoutes: { [key: string]: Destination[] } = {};
+    yOptimizedRoutes.forEach((yRoute, itineraryId) => {
+      newOptimizedRoutes[itineraryId] = yRoute.toArray().map(dest => dest.toJSON());
+    });
+    setOptimizedRoutes(newOptimizedRoutes);
   }, []);
 
   const markers = useMemo(() => {
     const newMarkers: MarkerData[] = [];
     itineraries.forEach(itinerary => {
+      let dayIndex = 1;
       if (itinerary.startPlace) {
-        newMarkers.push(createMarkerData('start', itinerary.startPlace));
+        newMarkers.push(createMarkerData('start', itinerary.startPlace, itinerary.date, dayIndex++, itinerary.itineraryId));
       }
       itinerary.destinations?.forEach(dest => {
-        newMarkers.push(createMarkerData('destination', dest));
+        newMarkers.push(createMarkerData('destination', dest, itinerary.date, dayIndex++, itinerary.itineraryId));
       });
       if (itinerary.endPlace) {
-        newMarkers.push(createMarkerData('end', itinerary.endPlace));
+        newMarkers.push(createMarkerData('end', itinerary.endPlace, itinerary.date, dayIndex, itinerary.itineraryId));
       }
     });
     return newMarkers;
@@ -279,11 +290,24 @@ export function useYjs({ project }: { project: ClientProject }) {
       setIsSaving(false);
     }
   }, [project, itineraries]);
+  const setOptimizedRoute = useCallback((itineraryId: string, route: Destination[]) => {
+    if (!ydoc) return;
+    const yOptimizedRoutes = ydoc.getMap<Y.Array<any>>('optimizedRoutes');
+    const yRoute = new Y.Array();
+    route.forEach(dest => {
+      const yDest = new Y.Map();
+      Object.entries(dest).forEach(([key, value]) => yDest.set(key, value));
+      yRoute.push([yDest]);
+    });
+    yOptimizedRoutes.set(itineraryId, yRoute);
+  }, [ydoc]);
 
   return {
     itineraries,
     markers,
     isSaving,
+    optimizedRoutes,
+    setOptimizedRoute,
     updateDayStartTime,
     setStartPlace,
     setEndPlace,
@@ -296,15 +320,16 @@ export function useYjs({ project }: { project: ClientProject }) {
   };
 }
 
-function createMarkerData(type: 'start' | 'destination' | 'end', place: Destination): MarkerData {
+function createMarkerData(type: 'start' | 'destination' | 'end', place: Destination, date: string, index: number, itineraryId: string): MarkerData {
   return {
-    id: type === 'destination' ? place.id : `${type}-${place.id}`,
+    id: `${itineraryId}-${type === 'destination' ? place.id : `${type}-${place.id}`}`,
     mapx: place.mapx,
     mapy: place.mapy,
     roadAddress: place.roadAddress,
     buildingName: place.title,
     category: place.category,
     link: place.link,
+    date,
+    dayIndex: index
   };
 }
-

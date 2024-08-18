@@ -8,21 +8,19 @@ export const getNickname = async () => {
     return null
   }
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/getNickname`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
+    const res = await fetch(`https://api.tetrips.co.kr/auth/getNickname`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
       },
-    )
+    })
     if (res.status === 200) {
       const data = await res.json()
       console.log(data)
       return data
     } else {
+      alert('백엔드 에러')
       console.log('status가 200이 아닙니다.')
     }
   } catch (error) {

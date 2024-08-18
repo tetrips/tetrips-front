@@ -32,6 +32,14 @@ export default function Signup() {
     // 다시 버튼을 활성화 시키는 로직 필요
   }
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(String(email).toLowerCase())
+  }
+  const validateNickname = (nickname: string) => {
+    const re = /^[a-zA-Z가-힣0-9]+$/
+    return re.test(nickname)
+  }
   const handleEmailCheck = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -39,6 +47,12 @@ export default function Signup() {
     if (form) {
       const formData = new FormData(form)
       const email = formData.get('email') as string
+
+      if (!validateEmail(email)) {
+        alert('유효한 이메일 주소를 입력하세요.')
+        return
+      }
+
       let result = await existsEmailCheck(email)
       if (result === 'success') {
         alert('사용 가능한 이메일 입니다.')
@@ -57,6 +71,12 @@ export default function Signup() {
     if (form) {
       const formData = new FormData(form)
       const nickname = formData.get('nickname') as string
+
+      if (!validateNickname(nickname)) {
+        alert('닉네임은 영어와 한글만 포함할 수 있습니다.')
+        return
+      }
+
       let result = await existsNicknameCheck(nickname)
       if (result === 'success') {
         alert('사용 가능한 닉네임 입니다.')
