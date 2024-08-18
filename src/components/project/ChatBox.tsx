@@ -35,7 +35,7 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   const fetchMessages = useCallback(async () => {
     try {
-      const response = await fetch(`https://chat.tetrips.co.kr/api/messages/${projectId}`);
+      const response = await fetch(`https://chat.trips.co.kr/api/messages/${projectId}`);
       if (!response.ok) {
         throw new Error('메시지를 불러오지 못했습니다.')
       }
@@ -96,11 +96,11 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
 
   useEffect(() => {
     fetchMessages();
-    const socket = new SockJS("https://chat.tetrips.co.kr/chat");
+    const socket = new SockJS("https://chat.trips.co.kr/chat");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/topic/messages/${projectId}/${chatUserId}`, (message) => {
+      stompClient.subscribe(`/topic/messages/${projectId}`, (message) => {
 
         const newMessage: Message = JSON.parse(message.body);
         console.log('Received new message:', newMessage);
