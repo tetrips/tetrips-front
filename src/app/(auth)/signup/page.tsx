@@ -13,33 +13,36 @@ import { router } from 'next/client'
 
 export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [checked, setChecked] = useState(0) //
-  // 체크 확인에 대한 로직 수정해야 함 이메일만 두번 체크해도 가입 요청이 가능
-  // const router = useRouter()
-  //
-  // useEffect(() => {
-  //   const username = Cookies.get('username')
-  //   if (username) {
-  //     router.push('/')
-  //   }
-  // }, [router])
+  const [checked, setChecked] = useState(0)
+  const [passwordMatch, setPasswordMatch] = useState(true)
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsSubmitting(true)
 
     const formData = new FormData(event.currentTarget)
+    const password = formData.get('password') as string
+    const confirmPassword = formData.get('confirm-password') as string
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match.')
+      setIsSubmitting(false)
+      return
+    }
+
     await signupFetch(formData)
-    // 다시 버튼을 활성화 시키는 로직 필요
   }
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return re.test(String(email).toLowerCase())
   }
+
   const validateNickname = (nickname: string) => {
     const re = /^[a-zA-Z가-힣0-9]+$/
     return re.test(nickname)
   }
+
   const handleEmailCheck = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -64,6 +67,7 @@ export default function Signup() {
       }
     }
   }
+
   const handleNicknameCheck = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -90,6 +94,18 @@ export default function Signup() {
       }
     }
   }
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const form = event.currentTarget.closest('form')
+    if (form) {
+      const formData = new FormData(form)
+      const password = formData.get('password') as string
+      const confirmPassword = formData.get('confirm-password') as string
+
+      setPasswordMatch(password === confirmPassword)
+    }
+  }
+
   return (
     <AuthLayout
       title="Sign up for an account"
@@ -129,7 +145,22 @@ export default function Signup() {
             type="password"
             autoComplete="new-password"
             required
+            onChange={handlePasswordChange}
           />
+          <TextField
+            className="col-span-full"
+            label="Confirm Password"
+            name="confirm-password"
+            type="password"
+            autoComplete="new-password"
+            required
+            onChange={handlePasswordChange}
+          />
+          {!passwordMatch && (
+            <p className="col-span-full text-red-500">
+              Passwords do not match.
+            </p>
+          )}
           <div className="col-span-full flex items-end space-x-4">
             <TextField
               className="w-full"
