@@ -3,172 +3,130 @@ import { ClientProject, Guest } from '@/types/Project';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { noto } from '../common/fonts';
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import * as Y from 'yjs';
 import { generateColorFromEmail, getContrastColor } from '@/utils/userColor';
+import { WebsocketProvider } from 'y-websocket';
 
 interface Message {
-  nickname: string
-  message: string
-  userId: string
-  prId: string
-  chatTime: Date
-}
-
-interface ClientMessage {
-  nickname: string
-  message: string
-  userId: string
-  prId: string
-  timestamp?: Date
+  nickname: string;
+  message: string;
+  userId: string;
+  prId: string;
+  timestamp: number;
 }
 
 export default function ChatBox({ project, userData }: { project: ClientProject, userData: Guest }) {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<ClientMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const ydocRef = useRef<Y.Doc | null>(null);
+  const providerRef = useRef<WebsocketProvider | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const stompClientRef = useRef<any>(null);
   const projectId = project.id;
   const userId = userData.email;
-  const chatUserId = userId.replace('@', '-');
   const nickname = userData.nickname;
 
-  const fetchMessages = useCallback(async () => {
-    try {
-      const response = await fetch(`https://chat.trips.co.kr/api/messages/${projectId}`);
-      if (!response.ok) {
-        throw new Error('메시지를 불러오지 못했습니다.')
-      }
-      const data: Message[] = await response.json()
-
-      const clientData = data.map((msg) => {
-        const originalUserId = msg.userId.replace('-', '@')
-        return {
-          nickname: msg.nickname,
-          message: msg.message,
-          userId: originalUserId,
-          prId: msg.prId,
-          timestamp: new Date(msg.chatTime),
-        }
-      })
-      setMessages(clientData)
-    } catch (error) {
-      console.error('Error fetching messages:', error)
-    }
-  }, [projectId])
-
-  const sendMessage = useCallback(async () => {
-    if (!stompClientRef.current || !stompClientRef.current.connected) {
-      return
-    }
-    if (input.trim()) {
-      const newMessage = {
-        nickname,
-        message: input.trim(),
-        userId: chatUserId,
-        prId: projectId,
-      }
-
-      try {
-        stompClientRef.current.send('/app/send', {}, JSON.stringify(newMessage))
-        const originalUserId = newMessage.userId.replace('-', '@')
-        const transformMessage = {
-          nickname: newMessage.nickname,
-          message: newMessage.message,
-          userId: originalUserId,
-          prId: newMessage.prId,
-        }
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            ...transformMessage,
-            timestamp: new Date(),
-          },
-        ])
-
-        setInput('')
-      } catch (error) {
-        console.error('Error sending message:', error)
-      }
-    }
-
-  }, [input, nickname, chatUserId, projectId]);
-
   useEffect(() => {
-    fetchMessages();
-    const socket = new SockJS("https://chat.trips.co.kr/chat");
-    const stompClient = Stomp.over(socket);
+    ydocRef.current = new Y.Doc();
+    const yarray = ydocRef.current.getArray<Message>('messages');
 
-    stompClient.connect({}, () => {
-      stompClient.subscribe(`/topic/messages/${projectId}`, (message) => {
+    providerRef.current = new WebsocketProvider(
+      'wss://demos.yjs.dev/ws', 
+      `tetrips-project-chat-room-${projectId}`,
+      ydocRef.current
+    );
 
-        const newMessage: Message = JSON.parse(message.body);
-        console.log('Received new message:', newMessage);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            nickname: newMessage.nickname,
-            message: newMessage.message,
-            userId: newMessage.userId.replace('-', '@'),
-            prId: newMessage.prId,
-            timestamp: new Date(newMessage.chatTime),
-          },
-        ]);
-      });
-    }, (error: any) => {
-      console.error('WebSocket error:', error);
+    providerRef.current.on('status', ({ status }: { status: string }) => {
+      setIsConnected(status === 'connected');
+      if (status === 'connected') {
+        setError(null);
+      }
     });
 
-    stompClientRef.current = stompClient;
+    providerRef.current.on('connection-error', (event: Event) => {
+      setError('연결 오류가 발생했습니다. 다시 시도해주세요.');
+    });
+
+    const updateMessages = () => {
+      const sortedMessages = [...yarray.toArray()].sort((a, b) => a.timestamp - b.timestamp);
+      setMessages(sortedMessages);
+    };
+
+    yarray.observe(updateMessages);
+    updateMessages();
 
     return () => {
-      if (stompClientRef.current) {
-        stompClientRef.current.disconnect();
+      if (providerRef.current) {
+        providerRef.current.destroy();
+      }
+      if (ydocRef.current) {
+        ydocRef.current.destroy();
       }
     };
-  }, [projectId, chatUserId, fetchMessages]);
+  }, [projectId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [messages])
+  }, [messages]);
 
+  const sendMessage = useCallback(() => {
+    if (input.trim() && ydocRef.current && isConnected) {
+      const yarray = ydocRef.current.getArray<Message>('messages');
+      const newMessage: Message = {
+        nickname,
+        message: input.trim(),
+        userId,
+        prId: projectId,
+        timestamp: Date.now(),
+      };
+      yarray.push([newMessage]);
+      setInput('');
+    }
+
+  }, [input, nickname, userId, projectId, isConnected]);
+
+  const formatTimestamp = useCallback((timestamp: number) => {
+    return new Date(timestamp).toLocaleString();
+  }, []);
+  
   const getUserColors = useCallback((email: string) => {
     const backgroundColor = generateColorFromEmail(email);
     const textColor = getContrastColor(backgroundColor);
     return { backgroundColor, textColor };
   }, []);
+  
 
   const messagesList = messages.map((msgObj, index) => {
-    const messageTime = msgObj.timestamp ? msgObj.timestamp.toLocaleString() : ''; 
+    const messageTime = formatTimestamp(msgObj.timestamp);
     const { backgroundColor, textColor } = getUserColors(msgObj.userId);
-
+  
     return (
-      <div
-        key={`${index}-${msgObj.userId}`}
-        className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}
-      >
+      <div key={`${msgObj.userId}-${msgObj.timestamp}`} className={`flex ${msgObj.userId === userId ? 'justify-end' : 'justify-start'}`}>
         {msgObj.userId !== userId && (
           <div className="flex flex-col items-center mr-2">
             <div 
-              className="w-8 h-8 rounded-full text-white flex items-center justify-center"
+              className="w-7 h-7 rounded-full text-white flex items-center justify-center"
               style={{ backgroundColor, color: textColor }}
             >
               {msgObj.nickname.charAt(0)}
             </div>
           </div>
         )}
-        <div
-          className={`${noto.className} flex max-w-xs flex-col space-y-1 text-xs font-bold`}
-        >
+        <div className={`${noto.className} flex flex-col font-bold space-y-1 text-xs max-w-xs`}>
           {msgObj.userId !== userId && (
-            <div className="text-gray-600">{msgObj.nickname}</div>
+            <div className="text-gray-600">
+              {msgObj.nickname}
+            </div>
           )}
-          <div className={`${noto.className} px-4 py-2 rounded-lg inline-block ${msgObj.userId === userId ? 'bg-sky-300 text-white' : 'bg-gray-100 text-gray-800'}`}>
+          <div className={`${noto.className} px-4 py-2 rounded-lg inline-block text-xs ${msgObj.userId === userId ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-800'}`}>
             {msgObj.message}
           </div>
-          <div className="mt-1 text-gray-500">{messageTime}</div>
+          <div className="text-gray-500 mt-1">
+            {messageTime}
+          </div>
         </div>
         {msgObj.userId === userId && (
           <div className="flex flex-col items-center ml-2">
@@ -181,11 +139,23 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
           </div>
         )}
       </div>
-    )
-  })
-
+    );
+  });
+  
   return (
     <div className="bg-white flex flex-col w-full h-full relative">
+      {!isConnected && (
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex flex-col items-center justify-center z-10">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-white mb-4"></div>
+          <p className="text-white text-lg">연결 중...</p>
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">오류:</strong>
+          <span className="block sm:inline"> {error}</span>
+        </div>
+      )}
       <div className="pl-2 pr-6 py-2 border w-full flex flex-col h-full">
         <div ref={chatContainerRef} className="flex-1 p-2 border rounded-xl overflow-y-auto no-scrollbar">
           <div className="flex flex-col space-y-4 p-2">
@@ -206,12 +176,13 @@ export default function ChatBox({ project, userData }: { project: ClientProject,
             <button
               className="p-2 bg-cyan-500 text-white rounded w-8 h-8 flex items-center justify-center"
               onClick={sendMessage}
+              disabled={!isConnected}
             >
-              <PlusIcon className="h-6 w-6" />
+              <PlusIcon className="w-6 h-6" />
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
