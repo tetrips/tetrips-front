@@ -1,1 +1,2 @@
-teamcity에서 ci 테스트를 진행 중입니다.
+teTrips의 1.0 버전입니다.
+README의 업데이트를 준비 중입니다.
